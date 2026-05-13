@@ -1,4 +1,5 @@
 :root {
+    --sidebar-width: 280px;
     --brand-950: #4f2500;
     --brand-900: #6a3300;
     --brand-800: #8b4409;
@@ -54,8 +55,8 @@ select {
 }
 
 .sidebar {
-    width: 300px;
-    flex: 0 0 300px;
+    width: var(--sidebar-width);
+    flex: 0 0 var(--sidebar-width);
     background:
         linear-gradient(180deg, rgba(106, 51, 0, 0.98), rgba(245, 134, 51, 0.92)),
         linear-gradient(135deg, #6a3300 0%, #f58633 100%);
@@ -186,8 +187,8 @@ select {
 }
 
 .app-main {
-    margin-left: 300px;
-    width: calc(100% - 300px);
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -660,6 +661,88 @@ select {
 .action-buttons .btn-secondary,
 .action-buttons .btn-logout {
     white-space: nowrap;
+}
+
+.payment-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.payment-grid > * {
+    min-width: 0;
+}
+
+.invoice-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.invoice-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.invoice-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.invoice-print-shell {
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+.print-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.print-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+@media print {
+    body {
+        background: #fff;
+    }
+
+    .sidebar,
+    .topbar,
+    .sidebar-overlay,
+    .print-toolbar {
+        display: none !important;
+    }
+
+    .app-main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .content {
+        padding: 0;
+    }
+
+    .page-card,
+    .content-card,
+    .print-card {
+        box-shadow: none;
+        border: 0;
+    }
 }
 
 .badge-status {
@@ -1150,6 +1233,11 @@ select {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .payment-grid,
+    .invoice-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
     .order-edit-grid,
     .banhang-layout {
         grid-template-columns: 1fr;
@@ -1185,6 +1273,12 @@ select {
 
     .order-summary-grid,
     .order-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-grid,
+    .invoice-meta-grid,
+    .invoice-summary {
         grid-template-columns: 1fr;
     }
 

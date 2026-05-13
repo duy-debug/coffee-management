@@ -381,7 +381,7 @@ public class DonHangServiceImpl implements DonHangService {
             throw new IllegalArgumentException("Trang thai don hang khong duoc de trong.");
         }
         String normalized = normalize(trangThai);
-        if (!List.of("Đang xử lý", "Đang phục vụ", "Chờ thanh toán", "Đã hủy").contains(normalized)) {
+        if (!List.of("Đang xử lý", "Đang phục vụ", "Chờ thanh toán", "Đã hủy", "Đã thanh toán").contains(normalized)) {
             throw new IllegalArgumentException("Trang thai don hang khong hop le.");
         }
         return normalized;
@@ -420,6 +420,8 @@ public class DonHangServiceImpl implements DonHangService {
         }
         Ban ban = donHang.getBan();
         if ("Đã hủy".equalsIgnoreCase(donHang.getTrangThai())) {
+            ban.setTrangThai("Trống");
+        } else if ("Đã thanh toán".equalsIgnoreCase(donHang.getTrangThai())) {
             ban.setTrangThai("Trống");
         } else if ("Chờ thanh toán".equalsIgnoreCase(donHang.getTrangThai())) {
             ban.setTrangThai("Chờ thanh toán");

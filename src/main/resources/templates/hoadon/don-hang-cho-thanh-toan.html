@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Đơn hàng chờ thanh toán', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Đơn hàng chờ thanh toán</h2>
+                    <p class="section-subtitle">Chọn đơn để chuyển sang trang thanh toán hóa đơn.</p>
+                </div>
+                <a th:href="@{/hoa-don}" class="btn-secondary">Quay lại hóa đơn</a>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt</th>
+                            <th>Loại đơn</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền</th>
+                            <th>Bàn</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachDonHang)}">
+                            <td colspan="7">Không có đơn hàng chờ thanh toán.</td>
+                        </tr>
+                        <tr th:each="donHang : ${danhSachDonHang}">
+                            <td th:text="${donHang.maDonHang}"></td>
+                            <td th:text="${#temporals.format(donHang.ngayDat, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${donHang.loaiDonHang}"></td>
+                            <td th:text="${donHang.trangThai}"></td>
+                            <td th:text="|${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="${donHang.ban != null ? donHang.ban.tenBan : '---'}"></td>
+                            <td class="order-actions-col">
+                                <div class="action-buttons">
+                                    <a th:href="@{'/hoa-don/thanh-toan/' + ${donHang.maDonHang}}" class="btn-primary btn-small">Thanh toán</a>
+                                    <a th:href="@{'/don-hang/' + ${donHang.maDonHang}}" class="btn-secondary btn-small">Xem đơn</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="|In hóa đơn ${hoaDon.maHoaDon}|">In hóa đơn</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="invoice-print-shell">
+    <div class="print-toolbar">
+        <div>
+            <h2 class="section-title">In hóa đơn</h2>
+            <p class="section-subtitle" th:text="${hoaDon.maHoaDon}"></p>
+        </div>
+        <div class="invoice-actions">
+            <button type="button" class="btn-primary" onclick="window.print()">In hóa đơn</button>
+            <a th:href="@{'/hoa-don/' + ${hoaDon.maHoaDon}}" class="btn-secondary">Xem chi tiết</a>
+            <a th:href="@{/hoa-don}" class="btn-secondary">Quay lại</a>
+        </div>
+    </div>
+
+    <div class="print-card">
+        <div style="text-align: center; margin-bottom: 18px;">
+            <h1 class="section-title" style="margin-bottom: 8px;">Coffee Management System</h1>
+            <p class="placeholder-text">Hóa đơn thanh toán</p>
+        </div>
+
+        <div class="invoice-meta-grid" style="margin-bottom: 18px;">
+            <div class="profile-card">
+                <p class="profile-card__label">Mã hóa đơn</p>
+                <div class="profile-card__value" th:text="${hoaDon.maHoaDon}"></div>
+            </div>
+            <div class="profile-card">
+                <p class="profile-card__label">Ngày thanh toán</p>
+                <div class="profile-card__value" th:text="${#temporals.format(hoaDon.ngayThanhToan, 'dd/MM/yyyy HH:mm')}"></div>
+            </div>
+            <div class="profile-card">
+                <p class="profile-card__label">Nhân viên</p>
+                <div class="profile-card__value" th:text="${hoaDon.donHang != null && hoaDon.donHang.nhanVien != null ? hoaDon.donHang.nhanVien.hoTen : '---'}"></div>
+            </div>
+            <div class="profile-card">
+                <p class="profile-card__label">Khách hàng</p>
+                <div class="profile-card__value" th:text="${hoaDon.donHang != null && hoaDon.donHang.khachHang != null ? hoaDon.donHang.khachHang.hoTen : '---'}"></div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Mã món</th>
+                    <th>Tên món</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${chiTietDonHangs}">
+                    <td th:text="${item.mon != null ? item.mon.maMon : '---'}"></td>
+                    <td th:text="${item.mon != null ? item.mon.tenMon : '---'}"></td>
+                    <td th:text="${item.soLuong}"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                    <td th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="invoice-summary" style="margin-top: 18px;">
+            <div class="profile-card">
+                <p class="profile-card__label">Phương thức</p>
+                <div class="profile-card__value" th:text="${hoaDon.phuongThucThanhToan}"></div>
+            </div>
+            <div class="profile-card">
+                <p class="profile-card__label">Tổng tiền</p>
+                <div class="profile-card__value" th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+            </div>
+            <div class="profile-card">
+                <p class="profile-card__label">Số tiền giảm</p>
+                <div class="profile-card__value" th:text="|${#numbers.formatDecimal(hoaDon.soTienGiam, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+            </div>
+            <div class="profile-card">
+                <p class="profile-card__label">Phải trả</p>
+                <div class="profile-card__value" th:text="|${#numbers.formatDecimal(hoaDon.soTienPhaiTra, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

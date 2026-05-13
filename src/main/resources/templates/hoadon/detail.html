@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết hóa đơn', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết hóa đơn</h2>
+                    <p class="section-subtitle" th:text="|${hoaDon.maHoaDon} • ${hoaDon.phuongThucThanhToan}|"></p>
+                </div>
+                <div class="invoice-actions">
+                    <a th:href="@{'/hoa-don/in/' + ${hoaDon.maHoaDon}}" class="btn-primary">In hóa đơn</a>
+                    <a th:href="@{/hoa-don}" class="btn-secondary">Quay lại</a>
+                </div>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="invoice-meta-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Ngày thanh toán</p>
+                        <div class="profile-card__value" th:text="${#temporals.format(hoaDon.ngayThanhToan, 'dd/MM/yyyy HH:mm')}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Phương thức</p>
+                        <div class="profile-card__value" th:text="${hoaDon.phuongThucThanhToan}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Mã đơn</p>
+                        <div class="profile-card__value" th:text="${hoaDon.donHang != null ? hoaDon.donHang.maDonHang : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Khuyến mãi</p>
+                        <div class="profile-card__value" th:text="${hoaDon.khuyenMai != null ? hoaDon.khuyenMai.tenKhuyenMai : '---'}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã món</th>
+                            <th>Tên món</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${chiTietDonHangs}">
+                            <td th:text="${item.mon != null ? item.mon.maMon : '---'}"></td>
+                            <td th:text="${item.mon != null ? item.mon.tenMon : '---'}"></td>
+                            <td th:text="${item.soLuong}"></td>
+                            <td th:text="|${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-card" style="margin-top: 18px;">
+                <div class="invoice-summary">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tổng tiền</p>
+                        <div class="profile-card__value" th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Số tiền giảm</p>
+                        <div class="profile-card__value" th:text="|${#numbers.formatDecimal(hoaDon.soTienGiam, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Phải trả</p>
+                        <div class="profile-card__value" th:text="|${#numbers.formatDecimal(hoaDon.soTienPhaiTra, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Đơn hàng</p>
+                        <div class="profile-card__value" th:text="${hoaDon.donHang != null ? hoaDon.donHang.trangThai : '---'}"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

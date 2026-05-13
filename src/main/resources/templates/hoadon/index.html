@@ -1,11 +1,132 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Hóa đơn', ~{::content})">
+<div th:replace="~{layout/main :: page('Hóa đơn', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Hóa đơn</h2>
-            <p class="placeholder-text">Trang placeholder cho hóa đơn và thanh toán.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Hóa đơn</h2>
+                    <p class="section-subtitle">Danh sách hóa đơn, đơn chờ thanh toán và in hóa đơn nhanh.</p>
+                </div>
+                <a th:href="@{/hoa-don/don-hang-cho-thanh-toan}" class="btn-primary">Đơn chờ thanh toán</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <form class="search-form" method="get" th:action="@{/hoa-don}">
+                    <div class="form-group">
+                        <label class="form-label">Từ khóa</label>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã hóa đơn, mã đơn hàng">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phương thức</label>
+                        <select class="form-control" name="phuongThucThanhToan">
+                            <option value="" th:selected="${phuongThucThanhToanLoc == null || phuongThucThanhToanLoc == ''}">Tất cả</option>
+                            <option value="Tiền mặt" th:selected="${phuongThucThanhToanLoc == 'Tiền mặt'}">Tiền mặt</option>
+                            <option value="Chuyển khoản" th:selected="${phuongThucThanhToanLoc == 'Chuyển khoản'}">Chuyển khoản</option>
+                            <option value="Ví điện tử" th:selected="${phuongThucThanhToanLoc == 'Ví điện tử'}">Ví điện tử</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" class="form-control" name="tuNgay" th:value="${tuNgay}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" class="form-control" name="denNgay" th:value="${denNgay}">
+                    </div>
+                    <button type="submit" class="btn-primary btn-small">Lọc</button>
+                    <a th:href="@{/hoa-don}" class="btn-secondary btn-small">Làm mới</a>
+                </form>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="page-head" style="margin-bottom: 12px;">
+                    <div>
+                        <h3 class="section-title" style="font-size: 18px;">Đơn hàng chờ thanh toán</h3>
+                        <p class="section-subtitle">Các đơn đang xử lý, đang phục vụ hoặc chờ thanh toán.</p>
+                    </div>
+                    <a th:href="@{/hoa-don/don-hang-cho-thanh-toan}" class="btn-secondary btn-small">Xem tất cả</a>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền</th>
+                            <th>Bàn</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachDonHangChoThanhToan)}">
+                            <td colspan="6">Không có đơn hàng nào chờ thanh toán.</td>
+                        </tr>
+                        <tr th:each="donHang : ${danhSachDonHangChoThanhToan}">
+                            <td th:text="${donHang.maDonHang}"></td>
+                            <td th:text="${#temporals.format(donHang.ngayDat, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <span class="badge-status badge-status--warning" th:text="${donHang.trangThai}"></span>
+                            </td>
+                            <td th:text="|${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="${donHang.ban != null ? donHang.ban.tenBan : '---'}"></td>
+                            <td class="order-actions-col">
+                                <div class="action-buttons">
+                                    <a th:href="@{'/don-hang/' + ${donHang.maDonHang}}" class="btn-secondary btn-small">Xem</a>
+                                    <a th:href="@{'/hoa-don/thanh-toan/' + ${donHang.maDonHang}}" class="btn-primary btn-small">Thanh toán</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã hóa đơn</th>
+                            <th>Ngày thanh toán</th>
+                            <th>Phương thức</th>
+                            <th>Tổng tiền</th>
+                            <th>Số tiền giảm</th>
+                            <th>Phải trả</th>
+                            <th>Mã đơn</th>
+                            <th>Khuyến mãi</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachHoaDon)}">
+                            <td colspan="9">Chưa có hóa đơn nào.</td>
+                        </tr>
+                        <tr th:each="hoaDon : ${danhSachHoaDon}">
+                            <td th:text="${hoaDon.maHoaDon}"></td>
+                            <td th:text="${#temporals.format(hoaDon.ngayThanhToan, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${hoaDon.phuongThucThanhToan}"></td>
+                            <td th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="|${#numbers.formatDecimal(hoaDon.soTienGiam, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="|${#numbers.formatDecimal(hoaDon.soTienPhaiTra, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="${hoaDon.donHang != null ? hoaDon.donHang.maDonHang : '---'}"></td>
+                            <td th:text="${hoaDon.khuyenMai != null ? hoaDon.khuyenMai.tenKhuyenMai : '---'}"></td>
+                            <td class="order-actions-col">
+                                <div class="action-buttons">
+                                    <a th:href="@{'/hoa-don/' + ${hoaDon.maHoaDon}}" class="btn-secondary btn-small">Xem</a>
+                                    <a th:href="@{'/hoa-don/in/' + ${hoaDon.maHoaDon}}" class="btn-primary btn-small">In</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
 </div>
