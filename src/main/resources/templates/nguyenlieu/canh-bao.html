@@ -1,39 +1,25 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout/main :: page('Quản lý nguyên liệu', ~{::content})}">
+<div th:replace="~{layout/main :: page('Cảnh báo nguyên liệu', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
             <div class="toolbar">
                 <div>
-                    <h2 class="section-title">Quản lý nguyên liệu</h2>
-                    <p class="section-subtitle">Theo dõi tồn kho, cảnh báo nguyên liệu sắp hết và cập nhật thông tin cơ bản.</p>
+                    <h2 class="section-title">Cảnh báo nguyên liệu</h2>
+                    <p class="section-subtitle">Danh sách nguyên liệu có số lượng tồn thấp hơn hoặc bằng mức tối thiểu.</p>
                 </div>
-                <div class="invoice-actions">
-                    <a th:href="@{/nguyen-lieu/canh-bao}" class="btn-secondary">Xem cảnh báo</a>
-                    <a th:href="@{/nguyen-lieu/them}" class="btn-primary" sec:authorize="hasAuthority('ROLE_ADMIN')">Thêm nguyên liệu</a>
-                </div>
+                <a th:href="@{/nguyen-lieu}" class="btn-secondary">Quay lại danh sách</a>
             </div>
 
-            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
-            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
-
             <div class="content-card" style="margin-bottom: 18px;">
-                <form class="search-form" method="get" th:action="@{/nguyen-lieu}">
+                <form class="search-form" method="get" th:action="@{/nguyen-lieu/canh-bao}">
                     <div class="form-group">
                         <label class="form-label">Từ khóa</label>
                         <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã hoặc tên nguyên liệu">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Lọc cảnh báo</label>
-                        <select class="form-control" name="sapHet">
-                            <option value="" th:selected="${sapHetLoc == null || sapHetLoc == ''}">Tất cả</option>
-                            <option value="true" th:selected="${sapHetLoc == 'true'}">Chỉ nguyên liệu sắp hết</option>
-                            <option value="false" th:selected="${sapHetLoc == 'false'}">Chỉ nguyên liệu đủ hàng</option>
-                        </select>
-                    </div>
                     <button type="submit" class="btn-primary btn-small">Lọc</button>
-                    <a th:href="@{/nguyen-lieu}" class="btn-secondary btn-small">Làm mới</a>
+                    <a th:href="@{/nguyen-lieu/canh-bao}" class="btn-secondary btn-small">Làm mới</a>
                 </form>
             </div>
 
@@ -53,7 +39,7 @@
                         </thead>
                         <tbody>
                         <tr th:if="${#lists.isEmpty(danhSachNguyenLieu)}">
-                            <td colspan="7">Chưa có nguyên liệu nào.</td>
+                            <td colspan="7">Không có nguyên liệu nào đang cảnh báo.</td>
                         </tr>
                         <tr th:each="nguyenLieu : ${danhSachNguyenLieu}">
                             <td th:text="${nguyenLieu.maNguyenLieu}"></td>
@@ -62,12 +48,12 @@
                             <td th:text="${nguyenLieu.soLuongTon}"></td>
                             <td th:text="${nguyenLieu.mucTonToiThieu}"></td>
                             <td>
-                                <span class="badge-status" th:classappend="${nguyenLieu.badgeClass}" th:text="${nguyenLieu.trangThaiHienThi}"></span>
+                                <span class="badge-status badge-status--warning">Sắp hết</span>
                             </td>
                             <td class="order-actions-col">
                                 <div class="action-buttons">
                                     <a th:href="@{'/nguyen-lieu/' + ${nguyenLieu.maNguyenLieu}}" class="btn-secondary btn-small">Xem</a>
-                                    <a th:href="@{'/nguyen-lieu/sua/' + ${nguyenLieu.maNguyenLieu}}" class="btn-primary btn-small" sec:authorize="hasAuthority('ROLE_ADMIN')">Sửa</a>
+                                    <a th:href="@{'/nguyen-lieu/sua/' + ${nguyenLieu.maNguyenLieu}}" class="btn-primary btn-small">Sửa</a>
                                 </div>
                             </td>
                         </tr>

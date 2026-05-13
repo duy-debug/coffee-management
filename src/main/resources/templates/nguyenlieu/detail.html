@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết nguyên liệu', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết nguyên liệu</h2>
+                    <p class="section-subtitle" th:text="${nguyenLieuDetail.nguyenLieu.maNguyenLieu}"></p>
+                </div>
+                <div class="invoice-actions">
+                    <a th:href="@{'/nguyen-lieu/sua/' + ${nguyenLieuDetail.nguyenLieu.maNguyenLieu}}" class="btn-primary">Sửa</a>
+                    <a th:href="@{/nguyen-lieu}" class="btn-secondary">Quay lại</a>
+                </div>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="profile-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tên nguyên liệu</p>
+                        <div class="profile-card__value" th:text="${nguyenLieuDetail.nguyenLieu.tenNguyenLieu}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Đơn vị tính</p>
+                        <div class="profile-card__value" th:text="${nguyenLieuDetail.nguyenLieu.donViTinh}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Trạng thái</p>
+                        <div class="profile-card__value" th:text="${nguyenLieuDetail.sapHet ? 'Sắp hết' : 'Đủ hàng'}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="profile-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Số lượng tồn</p>
+                        <div class="profile-card__value" th:text="${nguyenLieuDetail.nguyenLieu.soLuongTon}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Mức tồn tối thiểu</p>
+                        <div class="profile-card__value" th:text="${nguyenLieuDetail.nguyenLieu.mucTonToiThieu}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Cảnh báo</p>
+                        <div class="profile-card__value">
+                            <span class="badge-status" th:classappend="${nguyenLieuDetail.sapHet ? 'badge-status--warning' : 'badge-status--success'}"
+                                  th:text="${nguyenLieuDetail.sapHet ? 'Sắp hết' : 'Đủ hàng'}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warehouse-history">
+                <div class="content-card">
+                    <h3 class="section-title" style="font-size: 18px;">Nhập kho gần đây</h3>
+                    <p class="hint-text">Thống kê cơ bản từ chi tiết phiếu nhập. Sẽ mở rộng thêm khi làm màn nhập kho.</p>
+                    <div class="cart-list" style="margin-top: 14px;">
+                        <div class="cart-item" th:if="${#lists.isEmpty(nguyenLieuDetail.nhapGanNhat)}">
+                            Chưa có lịch sử nhập kho.
+                        </div>
+                        <div class="cart-item" th:each="item : ${nguyenLieuDetail.nhapGanNhat}" th:text="${item}"></div>
+                    </div>
+                    <div class="profile-actions" style="margin-top: 14px;">
+                        <div class="profile-card" style="flex: 1 1 180px;">
+                            <p class="profile-card__label">Số phiếu nhập</p>
+                            <div class="profile-card__value" th:text="${nguyenLieuDetail.soPhieuNhap}"></div>
+                        </div>
+                        <div class="profile-card" style="flex: 1 1 180px;">
+                            <p class="profile-card__label">Tổng số lượng nhập</p>
+                            <div class="profile-card__value" th:text="${nguyenLieuDetail.tongSoLuongNhap}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="section-title" style="font-size: 18px;">Xuất kho gần đây</h3>
+                    <p class="hint-text">Thống kê cơ bản từ chi tiết phiếu xuất. Sẽ mở rộng thêm khi làm màn xuất kho.</p>
+                    <div class="cart-list" style="margin-top: 14px;">
+                        <div class="cart-item" th:if="${#lists.isEmpty(nguyenLieuDetail.xuatGanNhat)}">
+                            Chưa có lịch sử xuất kho.
+                        </div>
+                        <div class="cart-item" th:each="item : ${nguyenLieuDetail.xuatGanNhat}" th:text="${item}"></div>
+                    </div>
+                    <div class="profile-actions" style="margin-top: 14px;">
+                        <div class="profile-card" style="flex: 1 1 180px;">
+                            <p class="profile-card__label">Số phiếu xuất</p>
+                            <div class="profile-card__value" th:text="${nguyenLieuDetail.soPhieuXuat}"></div>
+                        </div>
+                        <div class="profile-card" style="flex: 1 1 180px;">
+                            <p class="profile-card__label">Tổng số lượng xuất</p>
+                            <div class="profile-card__value" th:text="${nguyenLieuDetail.tongSoLuongXuat}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

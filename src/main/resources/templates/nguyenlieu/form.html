@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page(${formMode == 'create' ? 'Thêm nguyên liệu' : 'Sửa nguyên liệu'}, ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card form-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title" th:text="${formMode == 'create' ? 'Thêm nguyên liệu' : 'Sửa nguyên liệu'}"></h2>
+                    <p class="section-subtitle">Cập nhật thông tin cơ bản của nguyên liệu trong kho.</p>
+                </div>
+                <a th:href="@{/nguyen-lieu}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{${formAction}}" method="post" class="profile-form" th:object="${nguyenLieuForm}">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Mã nguyên liệu</label>
+                        <input type="text" class="form-control" th:field="*{maNguyenLieu}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên nguyên liệu</label>
+                        <input type="text" class="form-control" th:field="*{tenNguyenLieu}" placeholder="Nhập tên nguyên liệu" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị tính</label>
+                        <input type="text" class="form-control" th:field="*{donViTinh}" placeholder="Ví dụ: kg, g, lít" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số lượng tồn</label>
+                        <input type="number" min="0" class="form-control" th:field="*{soLuongTon}" th:readonly="${formMode == 'edit'}">
+                        <p class="hint-text" th:if="${formMode == 'edit'}">Số lượng tồn sẽ được cập nhật bởi nhập/xuất kho. Ở bước này chỉ xem lại giá trị hiện tại.</p>
+                    </div>
+                    <div class="form-group form-group--full">
+                        <label class="form-label">Mức tồn tối thiểu</label>
+                        <input type="number" min="0" class="form-control" th:field="*{mucTonToiThieu}" placeholder="Nhập mức tồn tối thiểu" required>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 18px;">
+                    <button type="submit" class="btn-primary" th:text="${formMode == 'create' ? 'Thêm nguyên liệu' : 'Cập nhật nguyên liệu'}"></button>
+                    <a th:href="@{/nguyen-lieu}" class="btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+</body>
+</html>

@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ChiTietPhieuXuatRepository extends JpaRepository<ChiTietPhieuXuat, String> {
 
     List<ChiTietPhieuXuat> findByPhieuXuatKho_MaPhieuXuat(String maPhieuXuat);
+
+    List<ChiTietPhieuXuat> findByNguyenLieu_MaNguyenLieu(String maNguyenLieu);
 }
 

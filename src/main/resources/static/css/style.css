@@ -686,6 +686,17 @@ select {
     gap: 14px;
 }
 
+.warehouse-history {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.warehouse-history > * {
+    min-width: 0;
+}
+
 .invoice-actions {
     display: flex;
     gap: 10px;
@@ -1278,7 +1289,8 @@ select {
 
     .payment-grid,
     .invoice-meta-grid,
-    .invoice-summary {
+    .invoice-summary,
+    .warehouse-history {
         grid-template-columns: 1fr;
     }
 
