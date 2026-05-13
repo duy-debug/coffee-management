@@ -1,11 +1,64 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Khách hàng', ~{::content})">
+<div th:replace="~{layout/main :: page('Khách hàng', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Khách hàng</h2>
-            <p class="placeholder-text">Trang placeholder cho khách hàng.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Khách hàng</h2>
+                    <p class="section-subtitle">Quản lý thông tin khách hàng và tra cứu lịch sử mua hàng.</p>
+                </div>
+                <a th:href="@{/khach-hang/them}" class="btn-primary">Thêm khách hàng</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <form class="search-form" method="get" th:action="@{/khach-hang}">
+                    <div class="form-group">
+                        <label class="form-label">Từ khóa</label>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã, họ tên, số điện thoại">
+                    </div>
+                    <button type="submit" class="btn-primary btn-small">Tìm kiếm</button>
+                    <a th:href="@{/khach-hang}" class="btn-secondary btn-small">Làm mới</a>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã khách</th>
+                            <th>Họ tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Ghi chú</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachKhachHang)}">
+                            <td colspan="5">Chưa có khách hàng nào.</td>
+                        </tr>
+                        <tr th:each="khachHang : ${danhSachKhachHang}">
+                            <td th:text="${khachHang.maKhachHang}"></td>
+                            <td th:text="${khachHang.hoTen}"></td>
+                            <td th:text="${khachHang.soDienThoai != null ? khachHang.soDienThoai : '---'}"></td>
+                            <td th:text="${khachHang.ghiChu != null ? khachHang.ghiChu : '---'}"></td>
+                            <td class="order-actions-col">
+                                <div class="action-buttons">
+                                    <a th:href="@{'/khach-hang/' + ${khachHang.maKhachHang}}" class="btn-secondary btn-small">Xem</a>
+                                    <a th:href="@{'/khach-hang/sua/' + ${khachHang.maKhachHang}}" class="btn-primary btn-small">Sửa</a>
+                                    <a th:href="@{'/khach-hang/lich-su/' + ${khachHang.maKhachHang}}" class="btn-secondary btn-small">Lịch sử</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
 </div>

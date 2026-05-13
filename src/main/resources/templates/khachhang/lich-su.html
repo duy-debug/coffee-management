@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Lịch sử mua hàng', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Lịch sử mua hàng</h2>
+                    <p class="section-subtitle" th:text="${khachHang.hoTen}"></p>
+                </div>
+                <a th:href="@{'/khach-hang/' + ${khachHang.maKhachHang}}" class="btn-secondary">Quay lại chi tiết</a>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="invoice-meta-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Mã khách</p>
+                        <div class="profile-card__value" th:text="${khachHang.maKhachHang}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Họ tên</p>
+                        <div class="profile-card__value" th:text="${khachHang.hoTen}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Số điện thoại</p>
+                        <div class="profile-card__value" th:text="${khachHang.soDienThoai != null ? khachHang.soDienThoai : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tổng đơn</p>
+                        <div class="profile-card__value" th:text="${#lists.size(lichSuMuaHangs)}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Loại đơn</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền</th>
+                            <th>Mã hóa đơn</th>
+                            <th>Phải trả</th>
+                            <th>Ngày thanh toán</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(lichSuMuaHangs)}">
+                            <td colspan="8">Khách hàng chưa có lịch sử mua hàng.</td>
+                        </tr>
+                        <tr th:each="item : ${lichSuMuaHangs}">
+                            <td th:text="${item.maDonHang}"></td>
+                            <td th:text="${#temporals.format(item.ngayDat, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${item.loaiDonHang}"></td>
+                            <td>
+                                <span class="badge-status"
+                                      th:classappend="${item.trangThaiDonHang == 'Đã thanh toán'} ? ' badge-status--success' : (${item.trangThaiDonHang == 'Đã hủy'} ? ' badge-status--neutral' : ' badge-status--warning')"
+                                      th:text="${item.trangThaiDonHang}"></span>
+                            </td>
+                            <td th:text="|${#numbers.formatDecimal(item.tongTienDonHang, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="${item.maHoaDon != null && item.maHoaDon != '' ? item.maHoaDon : '---'}"></td>
+                            <td th:text="${item.soTienPhaiTra != null ? #numbers.formatDecimal(item.soTienPhaiTra, 0, 'COMMA', 0, 'POINT') + ' đ' : '---'}"></td>
+                            <td th:text="${item.ngayThanhToan != null ? #temporals.format(item.ngayThanhToan, 'dd/MM/yyyy HH:mm') : '---'}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
