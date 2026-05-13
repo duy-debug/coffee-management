@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="layout/main :: page('Menu / Tra cứu menu', ~{::content})">
+    <div th:fragment="content">
+        <section class="page-card">
+            <h2 class="placeholder-title">Menu / Tra cứu menu</h2>
+            <p class="placeholder-text">Trang tra cứu menu cho cả Admin và Nhân viên. Đây là placeholder để kiểm tra sidebar theo role và CSS chung.</p>
+        </section>
+    </div>
+</div>
+</body>
+</html>

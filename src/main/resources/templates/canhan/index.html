@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="layout/main :: page('Thông tin cá nhân', ~{::content})">
+    <div th:fragment="content">
+        <section class="page-card">
+            <h2 class="placeholder-title">Thông tin cá nhân</h2>
+            <p class="placeholder-text">Trang placeholder cho thông tin cá nhân của người dùng đang đăng nhập.</p>
+        </section>
+    </div>
+</div>
+</body>
+</html>

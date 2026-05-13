@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="page(pageTitle, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' | Coffee Management System'">Coffee Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/main.js}" defer></script>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <h1 class="brand__title">Coffee Management System</h1>
+            <p class="brand__subtitle">Hệ thống Quản lý Cà phê Hoàng Tuấn</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/dashboard}" class="nav-link" data-route="/dashboard" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <span class="nav-link__left">
+                    <span class="nav-icon">⌂</span>
+                    <span class="nav-label">Dashboard</span>
+                </span>
+            </a>
+
+            <a th:href="@{/menu/index}" class="nav-link" data-route="/menu">
+                <span class="nav-link__left">
+                    <span class="nav-icon">☕</span>
+                    <span class="nav-label">Menu</span>
+                </span>
+            </a>
+
+            <div class="nav-group" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <button type="button" class="nav-group__toggle" data-submenu-toggle>
+                    <span class="nav-link__left">
+                        <span class="nav-icon">🛠</span>
+                        <span class="nav-label">Quản lý hệ thống</span>
+                    </span>
+                    <span class="nav-group__chevron">▾</span>
+                </button>
+                <div class="nav-submenu">
+                    <a th:href="@{/nhan-vien/index}" class="nav-link" data-route="/nhan-vien">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">👥</span>
+                            <span class="nav-label">Nhân viên</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/tai-khoan/index}" class="nav-link" data-route="/tai-khoan">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🔐</span>
+                            <span class="nav-label">Tài khoản</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/vai-tro/index}" class="nav-link" data-route="/vai-tro">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🧭</span>
+                            <span class="nav-label">Vai trò</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group__toggle" data-submenu-toggle>
+                    <span class="nav-link__left">
+                        <span class="nav-icon">🧾</span>
+                        <span class="nav-label">Bán hàng</span>
+                    </span>
+                    <span class="nav-group__chevron">▾</span>
+                </button>
+                <div class="nav-submenu">
+                    <a th:href="@{/ban-hang/index}" class="nav-link" data-route="/ban-hang">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🛒</span>
+                            <span class="nav-label">Bán hàng trực tiếp</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/ban/index}" class="nav-link" data-route="/ban">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🪑</span>
+                            <span class="nav-label">Quản lý bàn</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/don-hang/index}" class="nav-link" data-route="/don-hang">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">📋</span>
+                            <span class="nav-label">Đơn hàng</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/hoa-don/index}" class="nav-link" data-route="/hoa-don">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🧮</span>
+                            <span class="nav-label">Hóa đơn</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-group" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <button type="button" class="nav-group__toggle" data-submenu-toggle>
+                    <span class="nav-link__left">
+                        <span class="nav-icon">🍽</span>
+                        <span class="nav-label">Menu</span>
+                    </span>
+                    <span class="nav-group__chevron">▾</span>
+                </button>
+                <div class="nav-submenu">
+                    <a th:href="@{/nhom-mon/index}" class="nav-link" data-route="/nhom-mon">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🗂</span>
+                            <span class="nav-label">Nhóm món</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/mon/index}" class="nav-link" data-route="/mon">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🥤</span>
+                            <span class="nav-label">Món</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <a th:href="@{/khach-hang/index}" class="nav-link" data-route="/khach-hang">
+                <span class="nav-link__left">
+                    <span class="nav-icon">🧑‍🤝‍🧑</span>
+                    <span class="nav-label">Khách hàng</span>
+                </span>
+            </a>
+
+            <a th:href="@{/khuyen-mai/index}" class="nav-link" data-route="/khuyen-mai" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <span class="nav-link__left">
+                    <span class="nav-icon">🏷</span>
+                    <span class="nav-label">Khuyến mãi</span>
+                </span>
+            </a>
+
+            <div class="nav-group" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <button type="button" class="nav-group__toggle" data-submenu-toggle>
+                    <span class="nav-link__left">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-label">Kho nguyên liệu</span>
+                    </span>
+                    <span class="nav-group__chevron">▾</span>
+                </button>
+                <div class="nav-submenu">
+                    <a th:href="@{/nguyen-lieu/index}" class="nav-link" data-route="/nguyen-lieu">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🫘</span>
+                            <span class="nav-label">Nguyên liệu</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/phieu-nhap-kho/index}" class="nav-link" data-route="/phieu-nhap-kho">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">➕</span>
+                            <span class="nav-label">Nhập kho</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/phieu-xuat-kho/index}" class="nav-link" data-route="/phieu-xuat-kho">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">➖</span>
+                            <span class="nav-label">Xuất kho</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <a th:href="@{/bao-cao/index}" class="nav-link" data-route="/bao-cao" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <span class="nav-link__left">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-label">Báo cáo thống kê</span>
+                </span>
+            </a>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group__toggle" data-submenu-toggle>
+                    <span class="nav-link__left">
+                        <span class="nav-icon">👤</span>
+                        <span class="nav-label">Cá nhân</span>
+                    </span>
+                    <span class="nav-group__chevron">▾</span>
+                </button>
+                <div class="nav-submenu">
+                    <a th:href="@{/ca-nhan}" class="nav-link" data-route="/ca-nhan">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">ℹ</span>
+                            <span class="nav-label">Thông tin cá nhân</span>
+                        </span>
+                    </a>
+                    <a th:href="@{/ca-nhan/doi-mat-khau}" class="nav-link" data-route="/ca-nhan/doi-mat-khau">
+                        <span class="nav-link__left">
+                            <span class="nav-icon">🔑</span>
+                            <span class="nav-label">Đổi mật khẩu</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="nav-link" style="width: 100%; justify-content: flex-start;">
+                    <span class="nav-link__left">
+                        <span class="nav-icon">⏻</span>
+                        <span class="nav-label">Đăng xuất</span>
+                    </span>
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <div class="app-main">
+        <header class="topbar">
+            <div class="topbar__left">
+                <button type="button" class="sidebar-toggle" data-sidebar-open aria-label="Mở menu">☰</button>
+                <div>
+                    <h2 class="page-title" th:text="${pageTitle}">Trang quản trị</h2>
+                    <p class="page-subtitle">Coffee Management System</p>
+                </div>
+            </div>
+
+            <div class="topbar__actions">
+                <div class="user-box">
+                    <div>
+                        <div class="user-box__label">Người dùng đang đăng nhập</div>
+                        <div class="user-box__value" sec:authentication="name">admin</div>
+                    </div>
+                </div>
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="btn-logout">Đăng xuất</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="content">
+            <div th:replace="${content}"></div>
+        </main>
+    </div>
+</div>
+
+<div class="sidebar-overlay"></div>
+</body>
+</html>

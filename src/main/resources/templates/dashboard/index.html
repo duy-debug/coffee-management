@@ -1,44 +1,32 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Coffee Management</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #fdf7f2 0%, #f6e4d2 100%);
-            font-family: Arial, sans-serif;
-        }
-        .wrap {
-            padding: 40px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 18px;
-            padding: 28px;
-            box-shadow: 0 12px 30px rgba(60, 36, 22, 0.12);
-            max-width: 900px;
-        }
-        h1 {
-            margin-top: 0;
-            color: #5b341b;
-        }
-        .note {
-            color: #7b4b2a;
-            line-height: 1.7;
-        }
-    </style>
-</head>
 <body>
-<div class="wrap">
-    <div class="card">
-        <h1>Dashboard quản trị</h1>
-        <p class="note">
-            Đây là trang tổng quan dành cho quản trị viên. Giai đoạn này hệ thống mới có phần nền
-            Security và route dashboard, các module CRUD sẽ được triển khai tiếp ở bước sau.
-        </p>
+<div th:replace="layout/main :: page('Dashboard', ~{::content})">
+    <div th:fragment="content">
+        <section class="page-card hero">
+            <div class="hero__panel">
+                <h2>Xin chào, quản trị viên</h2>
+                <p>Đây là trang dashboard tổng quan của hệ thống. Từ sidebar bên trái, bạn có thể truy cập các module quản trị, bán hàng, menu, kho và báo cáo theo đúng vai trò.</p>
+            </div>
+            <div class="mini-grid">
+                <div class="stat">
+                    <p class="stat__label">Trạng thái hệ thống</p>
+                    <p class="stat__value">Sẵn sàng</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">Phân quyền</p>
+                    <p class="stat__value">Cố định</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">Công nghệ</p>
+                    <p class="stat__value">Spring Boot</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">CSDL</p>
+                    <p class="stat__value">MySQL</p>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
 </body>

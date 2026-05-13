@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="layout/main :: page('Khách hàng', ~{::content})">
+    <div th:fragment="content">
+        <section class="page-card">
+            <h2 class="placeholder-title">Khách hàng</h2>
+            <p class="placeholder-text">Trang placeholder cho khách hàng.</p>
+        </section>
+    </div>
+</div>
+</body>
+</html>
