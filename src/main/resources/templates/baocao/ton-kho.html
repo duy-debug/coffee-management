@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Báo cáo tồn kho nguyên liệu', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title">Báo cáo tồn kho nguyên liệu</h2>
+                    <p class="section-subtitle">Theo dõi mức tồn hiện tại và nhận diện nguyên liệu sắp hết.</p>
+                </div>
+                <a th:href="@{/bao-cao}" class="btn-secondary">Quay lại tổng quan</a>
+            </div>
+
+            <div class="report-grid" style="margin-bottom: 18px;">
+                <div class="report-card">
+                    <p class="report-card__label">Tổng nguyên liệu</p>
+                    <p class="report-card__value" th:text="${baoCaoTonKho.tongNguyenLieu}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Nguyên liệu sắp hết</p>
+                    <p class="report-card__value" th:text="${baoCaoTonKho.tongNguyenLieuSapHet}">0</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã nguyên liệu</th>
+                            <th>Tên nguyên liệu</th>
+                            <th>Đơn vị tính</th>
+                            <th>Số lượng tồn</th>
+                            <th>Mức tối thiểu</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(baoCaoTonKho.danhSach)}">
+                            <td colspan="6">Chưa có nguyên liệu nào.</td>
+                        </tr>
+                        <tr th:each="row : ${baoCaoTonKho.danhSach}">
+                            <td th:text="${row.maNguyenLieu}"></td>
+                            <td th:text="${row.tenNguyenLieu}"></td>
+                            <td th:text="${row.donViTinh}"></td>
+                            <td th:text="${row.soLuongTon}"></td>
+                            <td th:text="${row.mucTonToiThieu}"></td>
+                            <td>
+                                <span class="badge-status"
+                                      th:classappend="${row.trangThai == 'Sắp hết'} ? ' badge-status--warning' : ' badge-status--success'"
+                                      th:text="${row.trangThai}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

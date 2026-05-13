@@ -1,11 +1,74 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Báo cáo thống kê', ~{::content})">
+<div th:replace="~{layout/main :: page('Báo cáo thống kê', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Báo cáo thống kê</h2>
-            <p class="placeholder-text">Trang placeholder cho báo cáo thống kê.</p>
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title">Báo cáo thống kê</h2>
+                    <p class="section-subtitle">Tổng quan nhanh doanh thu, món bán chạy và tồn kho nguyên liệu.</p>
+                </div>
+            </div>
+
+            <div class="report-grid" style="margin-bottom: 18px;">
+                <div class="report-card">
+                    <p class="report-card__label">Doanh thu hôm nay</p>
+                    <p class="report-card__value" th:text="|${#numbers.formatDecimal(tongQuanBaoCao.doanhThuHomNay, 0, 'COMMA', 0, 'POINT')} đ|">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Doanh thu tháng này</p>
+                    <p class="report-card__value" th:text="|${#numbers.formatDecimal(tongQuanBaoCao.doanhThuThangNay, 0, 'COMMA', 0, 'POINT')} đ|">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Đơn hàng hôm nay</p>
+                    <p class="report-card__value" th:text="${tongQuanBaoCao.soDonHangHomNay}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Hóa đơn đã thanh toán</p>
+                    <p class="report-card__value" th:text="${tongQuanBaoCao.soHoaDonDaThanhToan}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Món đang bán</p>
+                    <p class="report-card__value" th:text="${tongQuanBaoCao.soMonDangBan}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Nguyên liệu sắp hết</p>
+                    <p class="report-card__value" th:text="${tongQuanBaoCao.soNguyenLieuSapHet}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Nhân viên đang làm</p>
+                    <p class="report-card__value" th:text="${tongQuanBaoCao.soNhanVienDangLam}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Tổng nguyên liệu</p>
+                    <p class="report-card__value" th:text="${tongQuanBaoCao.tongNguyenLieu}">0</p>
+                </div>
+            </div>
+
+            <div class="report-link-grid">
+                <div class="content-card report-link">
+                    <div>
+                        <h3 class="report-link__title">Báo cáo doanh thu</h3>
+                        <p class="report-link__desc">Lọc theo ngày và xem hóa đơn, tổng giảm giá, doanh thu thực thu.</p>
+                    </div>
+                    <a th:href="@{/bao-cao/doanh-thu}" class="btn-primary btn-small">Mở báo cáo</a>
+                </div>
+                <div class="content-card report-link">
+                    <div>
+                        <h3 class="report-link__title">Món bán chạy</h3>
+                        <p class="report-link__desc">Xem món nào được bán nhiều nhất trong khoảng thời gian đã chọn.</p>
+                    </div>
+                    <a th:href="@{/bao-cao/mon-ban-chay}" class="btn-primary btn-small">Mở báo cáo</a>
+                </div>
+                <div class="content-card report-link">
+                    <div>
+                        <h3 class="report-link__title">Tồn kho nguyên liệu</h3>
+                        <p class="report-link__desc">Kiểm tra tồn kho hiện tại và nhận diện nguyên liệu sắp hết.</p>
+                    </div>
+                    <a th:href="@{/bao-cao/ton-kho}" class="btn-primary btn-small">Mở báo cáo</a>
+                </div>
+            </div>
         </section>
     </div>
 </div>

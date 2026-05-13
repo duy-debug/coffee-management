@@ -761,6 +761,94 @@ select {
     align-items: center;
 }
 
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.report-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    border: 1px solid rgba(245, 134, 51, 0.16);
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8f1 100%);
+    box-shadow: 0 10px 22px rgba(122, 73, 23, 0.08);
+}
+
+.report-card__label {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.report-card__value {
+    margin: 0;
+    color: var(--brand-900);
+    font-size: 24px;
+    font-weight: 800;
+    word-break: break-word;
+}
+
+.report-card__hint {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.report-link-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.report-link {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: space-between;
+    min-height: 140px;
+}
+
+.report-link__title {
+    margin: 0;
+    color: var(--brand-900);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.report-link__desc {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.report-filter-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+.report-filter-bar .form-group {
+    min-width: 180px;
+    flex: 1 1 180px;
+}
+
+.report-table-summary {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.report-table-summary .badge-status {
+    padding: 8px 12px;
+}
+
 .invoice-print-shell {
     width: 100%;
     max-width: 920px;
@@ -1306,6 +1394,14 @@ select {
         grid-template-columns: 1fr;
     }
 
+    .report-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .report-link-grid {
+        grid-template-columns: 1fr;
+    }
+
     .order-edit-grid,
     .banhang-layout {
         grid-template-columns: 1fr;
@@ -1348,6 +1444,10 @@ select {
     .invoice-meta-grid,
     .invoice-summary,
     .warehouse-history {
+        grid-template-columns: 1fr;
+    }
+
+    .report-grid {
         grid-template-columns: 1fr;
     }
 

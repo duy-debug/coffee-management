@@ -5,25 +5,46 @@
     <div th:fragment="content">
         <section class="page-card hero">
             <div class="hero__panel">
-                <h2>Xin chào, quản trị viên</h2>
-                <p>Đây là trang dashboard tổng quan của hệ thống. Từ sidebar bên trái, bạn có thể truy cập các module quản trị, bán hàng, menu, kho và báo cáo theo đúng vai trò.</p>
+                <h2>Dashboard tổng quan</h2>
+                <p>Trang này hiển thị số liệu thật từ hóa đơn, đơn hàng, nhân viên, món và nguyên liệu trong hệ thống.</p>
+                <div class="report-table-summary" style="margin-top: 14px;">
+                    <a th:href="@{/bao-cao}" class="btn-secondary btn-small">Mở báo cáo</a>
+                    <a th:href="@{/bao-cao/doanh-thu}" class="btn-primary btn-small">Xem doanh thu</a>
+                </div>
             </div>
+
             <div class="mini-grid">
                 <div class="stat">
-                    <p class="stat__label">Trạng thái hệ thống</p>
-                    <p class="stat__value">Sẵn sàng</p>
+                    <p class="stat__label">Doanh thu hôm nay</p>
+                    <p class="stat__value" th:text="|${#numbers.formatDecimal(dashboard.doanhThuHomNay, 0, 'COMMA', 0, 'POINT')} đ|">0 đ</p>
                 </div>
                 <div class="stat">
-                    <p class="stat__label">Phân quyền</p>
-                    <p class="stat__value">Cố định</p>
+                    <p class="stat__label">Doanh thu tháng này</p>
+                    <p class="stat__value" th:text="|${#numbers.formatDecimal(dashboard.doanhThuThangNay, 0, 'COMMA', 0, 'POINT')} đ|">0 đ</p>
                 </div>
                 <div class="stat">
-                    <p class="stat__label">Công nghệ</p>
-                    <p class="stat__value">Spring Boot</p>
+                    <p class="stat__label">Đơn hàng hôm nay</p>
+                    <p class="stat__value" th:text="${dashboard.soDonHangHomNay}">0</p>
                 </div>
                 <div class="stat">
-                    <p class="stat__label">CSDL</p>
-                    <p class="stat__value">MySQL</p>
+                    <p class="stat__label">Hóa đơn đã thanh toán</p>
+                    <p class="stat__value" th:text="${dashboard.soHoaDonDaThanhToan}">0</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">Món đang bán</p>
+                    <p class="stat__value" th:text="${dashboard.soMonDangBan}">0</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">Nguyên liệu sắp hết</p>
+                    <p class="stat__value" th:text="${dashboard.soNguyenLieuSapHet}">0</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">Nhân viên đang làm</p>
+                    <p class="stat__value" th:text="${dashboard.soNhanVienDangLam}">0</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__label">Tổng nguyên liệu</p>
+                    <p class="stat__value" th:text="${dashboard.tongNguyenLieu}">0</p>
                 </div>
             </div>
         </section>

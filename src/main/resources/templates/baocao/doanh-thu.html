@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Báo cáo doanh thu', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title">Báo cáo doanh thu</h2>
+                    <p class="section-subtitle">Theo dõi các hóa đơn đã thanh toán trong khoảng thời gian bạn chọn.</p>
+                </div>
+                <a th:href="@{/bao-cao}" class="btn-secondary">Quay lại tổng quan</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <form class="report-filter-bar" method="get" th:action="@{/bao-cao/doanh-thu}">
+                    <div class="form-group">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" class="form-control" name="tuNgay" th:value="${baoCaoDoanhThu.tuNgay}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" class="form-control" name="denNgay" th:value="${baoCaoDoanhThu.denNgay}">
+                    </div>
+                    <button type="submit" class="btn-primary btn-small">Lọc</button>
+                    <a th:href="@{/bao-cao/doanh-thu}" class="btn-secondary btn-small">Làm mới</a>
+                </form>
+            </div>
+
+            <div class="report-grid" style="margin-bottom: 18px;">
+                <div class="report-card">
+                    <p class="report-card__label">Tổng hóa đơn</p>
+                    <p class="report-card__value" th:text="${baoCaoDoanhThu.tongSoHoaDon}">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Doanh thu trước giảm</p>
+                    <p class="report-card__value" th:text="|${#numbers.formatDecimal(baoCaoDoanhThu.tongDoanhThuTruocGiam, 0, 'COMMA', 0, 'POINT')} đ|">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Tổng tiền giảm</p>
+                    <p class="report-card__value" th:text="|${#numbers.formatDecimal(baoCaoDoanhThu.tongTienGiam, 0, 'COMMA', 0, 'POINT')} đ|">0</p>
+                </div>
+                <div class="report-card">
+                    <p class="report-card__label">Doanh thu thực thu</p>
+                    <p class="report-card__value" th:text="|${#numbers.formatDecimal(baoCaoDoanhThu.tongDoanhThuThucThu, 0, 'COMMA', 0, 'POINT')} đ|">0</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã hóa đơn</th>
+                            <th>Ngày thanh toán</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Phương thức</th>
+                            <th>Tổng tiền</th>
+                            <th>Số tiền giảm</th>
+                            <th>Phải trả</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(baoCaoDoanhThu.danhSach)}">
+                            <td colspan="7">Không có dữ liệu trong khoảng thời gian này.</td>
+                        </tr>
+                        <tr th:each="row : ${baoCaoDoanhThu.danhSach}">
+                            <td th:text="${row.maHoaDon}"></td>
+                            <td th:text="${#temporals.format(row.ngayThanhToan, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${row.maDonHang}"></td>
+                            <td th:text="${row.phuongThucThanhToan}"></td>
+                            <td th:text="|${#numbers.formatDecimal(row.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="|${#numbers.formatDecimal(row.soTienGiam, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="|${#numbers.formatDecimal(row.soTienPhaiTra, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="report-table-summary" th:if="${baoCaoDoanhThu.tuNgay != null and baoCaoDoanhThu.denNgay != null}">
+                    <span class="badge-status badge-status--neutral">Từ ngày: <span th:text="${#temporals.format(baoCaoDoanhThu.tuNgay, 'dd/MM/yyyy')}"></span></span>
+                    <span class="badge-status badge-status--neutral">Đến ngày: <span th:text="${#temporals.format(baoCaoDoanhThu.denNgay, 'dd/MM/yyyy')}"></span></span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
