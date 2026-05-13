@@ -23,6 +23,8 @@
 html, body {
     margin: 0;
     min-height: 100%;
+    width: 100%;
+    overflow-x: hidden;
     font-family: "Segoe UI", Arial, sans-serif;
     color: var(--text);
     background: linear-gradient(135deg, #fff8f1 0%, #fff2e6 55%, #ffe2c2 100%);
@@ -41,20 +43,30 @@ select {
 }
 
 .app-shell {
-    display: flex;
+    display: block;
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.app-layout {
+    width: 100%;
 }
 
 .sidebar {
     width: 300px;
+    flex: 0 0 300px;
     background:
         linear-gradient(180deg, rgba(106, 51, 0, 0.98), rgba(245, 134, 51, 0.92)),
         linear-gradient(135deg, #6a3300 0%, #f58633 100%);
     color: #fff;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
     height: 100vh;
     overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
     box-shadow: 8px 0 30px rgba(122, 73, 23, 0.22);
 }
 
@@ -174,16 +186,21 @@ select {
 }
 
 .app-main {
-    flex: 1;
+    margin-left: 300px;
+    width: calc(100% - 300px);
     min-width: 0;
     display: flex;
     flex-direction: column;
 }
 
+.main-wrapper {
+    min-width: 0;
+}
+
 .topbar {
     position: sticky;
     top: 0;
-    z-index: 20;
+    z-index: 900;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -298,10 +315,21 @@ select {
 }
 
 .content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 24px;
+    overflow-x: hidden;
+}
+
+.page-content {
+    min-width: 0;
 }
 
 .page-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     background: rgba(255, 255, 255, 0.92);
     border: 1px solid var(--border);
     border-radius: 22px;
@@ -309,14 +337,28 @@ select {
     padding: 24px;
 }
 
+.content-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+}
+
 .hero {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     gap: 20px;
     align-items: stretch;
 }
 
 .hero__panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 24px;
     border-radius: 20px;
     background: linear-gradient(135deg, rgba(245, 134, 51, 0.98), rgba(255, 182, 103, 0.96));
@@ -406,7 +448,22 @@ select {
     gap: 16px;
 }
 
+.order-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.order-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
 .profile-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 18px;
     padding: 16px 18px;
@@ -427,6 +484,9 @@ select {
 }
 
 .form-card {
+    width: 100%;
+    max-width: 920px;
+    min-width: 0;
     max-width: 920px;
 }
 
@@ -458,6 +518,7 @@ select {
 .form-control {
     width: 100%;
     min-height: 46px;
+    max-width: 100%;
     border: 1px solid rgba(245, 134, 51, 0.22);
     border-radius: 12px;
     padding: 11px 14px;
@@ -514,19 +575,23 @@ select {
 }
 
 .search-form {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
-    flex-wrap: wrap;
     align-items: end;
     margin-bottom: 18px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .search-form .form-group {
-    min-width: 180px;
+    min-width: 0;
 }
 
 .table-wrap {
     overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 .data-table {
@@ -535,12 +600,19 @@ select {
     min-width: 900px;
 }
 
+.data-table th.order-actions-col,
+.data-table td.order-actions-col {
+    min-width: 200px;
+    white-space: nowrap;
+}
+
 .data-table th,
 .data-table td {
     padding: 14px 12px;
     border-bottom: 1px solid rgba(245, 134, 51, 0.14);
     text-align: left;
     vertical-align: top;
+    overflow-wrap: anywhere;
 }
 
 .data-table th {
@@ -558,13 +630,36 @@ select {
 .table-actions {
     display: flex;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    align-items: center;
+    white-space: nowrap;
 }
 
 .btn-small {
-    padding: 8px 12px;
+    padding: 7px 10px;
     border-radius: 10px;
     font-size: 13px;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.action-buttons form {
+    margin: 0;
+    display: inline-block;
+}
+
+.action-buttons .btn-primary,
+.action-buttons .btn-secondary,
+.action-buttons .btn-logout {
+    white-space: nowrap;
 }
 
 .badge-status {
@@ -616,6 +711,9 @@ select {
 }
 
 .ban-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 18px;
     padding: 18px;
@@ -670,12 +768,30 @@ select {
 
 .banhang-layout {
     display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 360px;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr) minmax(0, 360px);
     gap: 18px;
     align-items: start;
+    width: 100%;
+    max-width: 100%;
+}
+
+.order-edit-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr) minmax(0, 320px);
+    gap: 18px;
+    align-items: start;
+    width: 100%;
+    max-width: 100%;
+}
+
+.order-edit-grid > * {
+    min-width: 0;
 }
 
 .banhang-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 18px;
     background: linear-gradient(180deg, #ffffff 0%, #fff8f1 100%);
@@ -778,6 +894,8 @@ select {
 }
 
 .cart-item {
+    width: 100%;
+    max-width: 100%;
     border: 1px solid rgba(245, 134, 51, 0.16);
     border-radius: 16px;
     padding: 12px;
@@ -853,6 +971,9 @@ select {
 }
 
 .menu-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 18px;
     padding: 18px;
@@ -1015,7 +1136,26 @@ select {
         justify-content: center;
     }
 
+    .app-main {
+        margin-left: 0;
+        width: 100%;
+    }
+
     .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .order-summary-grid,
+    .order-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .order-edit-grid,
+    .banhang-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .search-form {
         grid-template-columns: 1fr;
     }
 }
@@ -1043,6 +1183,11 @@ select {
         grid-template-columns: 1fr;
     }
 
+    .order-summary-grid,
+    .order-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
     .menu-grid {
         grid-template-columns: 1fr;
     }
@@ -1055,7 +1200,19 @@ select {
         grid-template-columns: 1fr;
     }
 
+    .order-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
     .product-grid {
         grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+        align-items: stretch;
+    }
+
+    .toolbar > * {
+        width: 100%;
     }
 }

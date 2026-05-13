@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Sửa đơn hàng', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Sửa đơn hàng</h2>
+                    <p class="section-subtitle" th:text="|${donHang.maDonHang} • ${donHang.trangThai}|"></p>
+                </div>
+                <a th:href="@{'/don-hang/' + ${donHang.maDonHang}}" class="btn-secondary">Quay lại chi tiết</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="order-summary-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Loại đơn</p>
+                        <div class="profile-card__value" th:text="${donHang.loaiDonHang}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Bàn</p>
+                        <div class="profile-card__value" th:text="${donHang.ban != null ? donHang.ban.tenBan : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Khách hàng</p>
+                        <div class="profile-card__value" th:text="${donHang.khachHang != null ? donHang.khachHang.hoTen : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tổng tiền</p>
+                        <div class="profile-card__value" th:text="|${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${!canSua}" class="alert alert-danger">
+                Đơn hàng đã thanh toán hoặc đã hủy, không thể chỉnh sửa.
+            </div>
+
+            <div th:if="${canSua}" class="order-edit-grid">
+                <aside class="banhang-panel">
+                    <h3 class="banhang-panel__title">Thêm món vào đơn</h3>
+                    <form th:action="@{'/don-hang/them-mon/' + ${donHang.maDonHang}}" method="post" class="banhang-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                        <div class="form-group">
+                            <label class="form-label">Từ khóa</label>
+                            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Tên hoặc mã món">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Nhóm món</label>
+                            <select class="form-control" name="maNhomMon">
+                                <option value="" th:selected="${maNhomMonLoc == null || maNhomMonLoc == ''}">Tất cả</option>
+                                <option th:each="nhomMon : ${danhSachNhomMon}" th:value="${nhomMon.maNhomMon}" th:text="${nhomMon.tenNhomMon}" th:selected="${maNhomMonLoc == nhomMon.maNhomMon}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Chọn món</label>
+                            <select class="form-control" name="maMon" required>
+                                <option value="">-- Chọn món đang bán --</option>
+                                <option th:each="mon : ${danhSachMon}"
+                                        th:value="${mon.maMon}"
+                                        th:text="|${mon.maMon} - ${mon.tenMon} (${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} đ)|"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Số lượng</label>
+                            <input type="number" min="1" class="form-control" name="soLuong" value="1">
+                        </div>
+
+                        <button type="submit" class="btn-primary">Thêm món</button>
+                    </form>
+                </aside>
+
+                <main class="banhang-panel">
+                    <h3 class="banhang-panel__title">Món trong đơn</h3>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                            <tr>
+                                <th>Mã món</th>
+                                <th>Tên món</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                                <th>Thành tiền</th>
+                                <th>Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(chiTietDonHangs)}">
+                                <td colspan="6">Đơn hàng chưa có món.</td>
+                            </tr>
+                            <tr th:each="item : ${chiTietDonHangs}">
+                                <td th:text="${item.mon != null ? item.mon.maMon : '---'}"></td>
+                                <td th:text="${item.mon != null ? item.mon.tenMon : '---'}"></td>
+                                <td>
+                                    <form th:action="@{'/don-hang/cap-nhat-so-luong/' + ${item.maCTDH}}" method="post" class="cart-item__actions">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <input type="number" min="1" name="soLuong" class="form-control" style="width: 90px; max-width: 100%;" th:value="${item.soLuong}">
+                                        <button type="submit" class="btn-secondary btn-small">Lưu</button>
+                                    </form>
+                                </td>
+                                <td th:text="|${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                                <td th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                                <td>
+                                    <form th:action="@{'/don-hang/xoa-mon/' + ${item.maCTDH}}" method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="btn-logout btn-small">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+
+                <aside class="banhang-panel">
+                    <h3 class="banhang-panel__title">Trạng thái đơn</h3>
+                    <form th:action="@{'/don-hang/cap-nhat-trang-thai/' + ${donHang.maDonHang}}" method="post" class="banhang-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="form-group">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-control" name="trangThai">
+                                <option value="Đang xử lý" th:selected="${donHang.trangThai == 'Đang xử lý'}">Đang xử lý</option>
+                                <option value="Đang phục vụ" th:selected="${donHang.trangThai == 'Đang phục vụ'}">Đang phục vụ</option>
+                                <option value="Chờ thanh toán" th:selected="${donHang.trangThai == 'Chờ thanh toán'}">Chờ thanh toán</option>
+                                <option value="Đã hủy" th:selected="${donHang.trangThai == 'Đã hủy'}">Đã hủy</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Cập nhật trạng thái</button>
+                    </form>
+
+                    <div class="cart-summary" style="margin-top: 16px;">
+                        <div class="cart-summary__row">
+                            <span class="cart-summary__label">Tổng tiền</span>
+                            <span class="cart-summary__value" th:text="|${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

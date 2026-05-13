@@ -9,7 +9,7 @@
     <script th:src="@{/js/main.js}" defer></script>
 </head>
 <body>
-<div class="app-shell">
+<div class="app-shell app-layout">
     <aside class="sidebar">
         <div class="brand">
             <h1 class="brand__title">Coffee Management System</h1>
@@ -208,7 +208,7 @@
         </nav>
     </aside>
 
-    <div class="app-main">
+    <div class="app-main main-wrapper">
         <header class="topbar">
             <div class="topbar__left">
                 <button type="button" class="sidebar-toggle" data-sidebar-open aria-label="Mở menu">☰</button>
@@ -232,7 +232,7 @@
             </div>
         </header>
 
-        <main class="content">
+        <main class="content page-content">
             <div th:replace="${content}"></div>
         </main>
     </div>

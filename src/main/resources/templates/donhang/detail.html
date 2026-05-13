@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết đơn hàng', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết đơn hàng</h2>
+                    <p class="section-subtitle" th:text="|${donHang.maDonHang} • ${donHang.loaiDonHang} • ${donHang.trangThai}|"></p>
+                </div>
+                <a th:href="@{/don-hang}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="order-detail-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Ngày đặt</p>
+                        <div class="profile-card__value" th:text="${#temporals.format(donHang.ngayDat, 'dd/MM/yyyy HH:mm')}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Nhân viên</p>
+                        <div class="profile-card__value" th:text="${donHang.nhanVien != null ? donHang.nhanVien.hoTen : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Khách hàng</p>
+                        <div class="profile-card__value" th:text="${donHang.khachHang != null ? donHang.khachHang.hoTen : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Bàn</p>
+                        <div class="profile-card__value" th:text="${donHang.ban != null ? donHang.ban.tenBan : '---'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tổng tiền</p>
+                        <div class="profile-card__value" th:text="|${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã món</th>
+                            <th>Tên món</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${chiTietDonHangs}">
+                            <td th:text="${item.mon != null ? item.mon.maMon : '---'}"></td>
+                            <td th:text="${item.mon != null ? item.mon.tenMon : '---'}"></td>
+                            <td th:text="${item.soLuong}"></td>
+                            <td th:text="|${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                            <td th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 18px;">
+                <a th:if="${canSua}" th:href="@{'/don-hang/sua/' + ${donHang.maDonHang}}" class="btn-primary">Chỉnh sửa đơn</a>
+                <form th:if="${canSua}" th:action="@{'/don-hang/huy/' + ${donHang.maDonHang}}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button type="submit" class="btn-logout">Hủy đơn</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
