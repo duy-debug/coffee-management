@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | Coffee Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #3b2416 0%, #7b4b2a 45%, #f2b66d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+        }
+        .login-card {
+            background: rgba(255, 248, 240, 0.96);
+            border-radius: 20px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+            padding: 32px;
+        }
+        .brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .brand h1 {
+            margin: 0;
+            color: #5b341b;
+            font-size: 28px;
+        }
+        .brand p {
+            margin: 8px 0 0;
+            color: #8a5a3b;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5b341b;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e3c6ad;
+            border-radius: 12px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: #b87333;
+            box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.15);
+        }
+        .btn-login {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #b87333, #8a4f24);
+            color: #fff;
+            padding: 13px 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .alert {
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .alert-error {
+            background: #ffe6e6;
+            color: #b42318;
+        }
+        .alert-success {
+            background: #e8f7ec;
+            color: #1f6b2f;
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="brand">
+            <h1>Coffee Hoàng Tuấn</h1>
+            <p>Đăng nhập hệ thống quản lý quán cà phê</p>
+        </div>
+
+        <div class="alert alert-error" th:if="${param.error}">
+            Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.
+        </div>
+
+        <div class="alert alert-success" th:if="${param.logout}">
+            Bạn đã đăng xuất thành công.
+        </div>
+
+        <form method="post" action="/login">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="form-group">
+                <label for="tenDangNhap">Tên đăng nhập</label>
+                <input type="text" id="tenDangNhap" name="tenDangNhap" placeholder="Nhập tên đăng nhập" required>
+            </div>
+
+            <div class="form-group">
+                <label for="matKhau">Mật khẩu</label>
+                <input type="password" id="matKhau" name="matKhau" placeholder="Nhập mật khẩu" required>
+            </div>
+
+            <button type="submit" class="btn-login">Đăng nhập</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

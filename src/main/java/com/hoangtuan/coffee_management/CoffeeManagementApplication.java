@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CoffeeManagementApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(CoffeeManagementApplication.class, args);
-  }
-
+    public static void main(String[] args) {
+        SpringApplication.run(CoffeeManagementApplication.class, args);
+    }
 }
+

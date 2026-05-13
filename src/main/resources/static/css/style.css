@@ -1,0 +1,19 @@
+:root {
+    --coffee-dark: #3b2416;
+    --coffee-brown: #7b4b2a;
+    --coffee-accent: #f2b66d;
+    --coffee-cream: #fff8f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #2d1b12;
+}
+
+a {
+    color: inherit;
+}

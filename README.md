@@ -385,8 +385,7 @@ cd coffee_management
 ```
 
 ### Bước 2: Tạo database
-- Tạo database `coffee_management` trong MySQL.
-- Hoặc để `createDatabaseIfNotExist=true` tự tạo khi chạy lần đầu.
+- Để `createDatabaseIfNotExist=true` tự tạo khi chạy lần đầu.
 
 ### Bước 3: Import SQL seed
 - Import file `src/main/resources/database/coffee_management_seed.sql` hoặc file SQL seed mà dự án đang dùng.
