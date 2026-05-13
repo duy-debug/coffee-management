@@ -4,8 +4,89 @@
 <div th:replace="layout/main :: page('Quản lý món', ~{::content})">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Quản lý món</h2>
-            <p class="placeholder-text">Trang placeholder cho admin quản lý món. Chức năng CRUD sẽ làm ở bước sau.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Quản lý món</h2>
+                    <p class="section-subtitle">Thêm, sửa và ngừng bán món trong hệ thống.</p>
+                </div>
+                <a th:href="@{/mon/them}" class="btn-primary">Thêm món</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form class="search-form" method="get" th:action="@{/mon}">
+                <div class="form-group">
+                    <label class="form-label">Từ khóa</label>
+                    <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã hoặc tên món">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nhóm món</label>
+                    <select class="form-control" name="maNhomMon">
+                        <option value="" th:selected="${maNhomMonLoc == null || maNhomMonLoc == ''}">Tất cả</option>
+                        <option th:each="nhomMon : ${danhSachNhomMon}" th:value="${nhomMon.maNhomMon}" th:text="${nhomMon.tenNhomMon}" th:selected="${maNhomMonLoc == nhomMon.maNhomMon}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-control" name="trangThai">
+                        <option value="" th:selected="${trangThaiLoc == null || trangThaiLoc == ''}">Tất cả</option>
+                        <option value="true" th:selected="${trangThaiLoc == 'true'}">Đang bán</option>
+                        <option value="false" th:selected="${trangThaiLoc == 'false'}">Ngừng bán</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary btn-small">Lọc</button>
+                <a th:href="@{/mon}" class="btn-secondary btn-small">Làm mới</a>
+            </form>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Mã món</th>
+                        <th>Ảnh</th>
+                        <th>Tên món</th>
+                        <th>Nhóm món</th>
+                        <th>Giá bán</th>
+                        <th>Trạng thái</th>
+                        <th>Mô tả</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(danhSachMon)}">
+                        <td colspan="8">Chưa có món nào.</td>
+                    </tr>
+                    <tr th:each="mon : ${danhSachMon}">
+                        <td th:text="${mon.maMon}"></td>
+                        <td>
+                            <img th:if="${mon.hinhAnh != null and mon.hinhAnh != ''}" th:src="@{'/uploads/mon/' + ${mon.hinhAnh}}" alt="Ảnh món" class="table-thumb">
+                            <span th:if="${mon.hinhAnh == null or mon.hinhAnh == ''}" class="badge-status badge-status--neutral">Chưa có</span>
+                        </td>
+                        <td th:text="${mon.tenMon}"></td>
+                        <td th:text="${mon.nhomMon != null ? mon.nhomMon.tenNhomMon : '---'}"></td>
+                        <td th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                        <td>
+                            <span class="badge-status"
+                                  th:classappend="${mon.trangThai} ? ' badge-status--success' : ' badge-status--danger'"
+                                  th:text="${mon.trangThai} ? 'Đang bán' : 'Ngừng bán'"></span>
+                        </td>
+                        <td th:text="${mon.moTa} ?: '---'"></td>
+                        <td>
+                            <div class="table-actions">
+                                <a th:href="@{'/mon/sua/' + ${mon.maMon}}" class="btn-secondary btn-small">Sửa</a>
+                                <form th:if="${mon.trangThai}" th:action="@{'/mon/ngung-ban/' + ${mon.maMon}}" method="post">
+                                    <button type="submit" class="btn-logout btn-small">Ngừng bán</button>
+                                </form>
+                                <form th:if="${!mon.trangThai}" th:action="@{'/mon/mo-ban/' + ${mon.maMon}}" method="post">
+                                    <button type="submit" class="btn-primary btn-small">Mở bán</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 </div>

@@ -22,6 +22,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    document.querySelectorAll("[data-image-input]").forEach((input) => {
+        input.addEventListener("change", () => {
+            const file = input.files && input.files[0];
+            const preview = input.closest(".form-group")?.querySelector("[data-image-preview]");
+            if (!preview) {
+                return;
+            }
+
+            preview.innerHTML = "";
+            if (!file) {
+                preview.classList.add("image-preview--empty");
+                preview.textContent = "Chưa có ảnh xem trước";
+                return;
+            }
+
+            const img = document.createElement("img");
+            img.alt = "Xem trước ảnh món";
+            preview.classList.remove("image-preview--empty");
+            preview.appendChild(img);
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                img.src = event.target?.result || "";
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
     const normalizePath = (path) => (path.length > 1 ? path.replace(/\/$/, "") : path);
     const currentPath = normalizePath(window.location.pathname);
 

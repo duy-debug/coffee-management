@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="layout/main :: page('Món', ~{::content})">
+    <div th:fragment="content">
+        <section class="page-card form-card">
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title" th:text="${formMode == 'create' ? 'Thêm món' : 'Cập nhật món'}"></h2>
+                    <p class="section-subtitle">Quản lý món và trạng thái bán hàng trong menu.</p>
+                </div>
+                <a th:href="@{/mon}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{${formAction}}" th:object="${monForm}" method="post" enctype="multipart/form-data" class="profile-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Mã món</label>
+                        <input type="text" class="form-control" th:field="*{maMon}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên món</label>
+                        <input type="text" class="form-control" th:field="*{tenMon}" placeholder="Nhập tên món">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Giá bán</label>
+                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{donGia}" placeholder="Nhập giá bán">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nhóm món</label>
+                        <select class="form-control" th:field="*{maNhomMon}">
+                            <option value="">-- Chọn nhóm món --</option>
+                            <option th:each="nhomMon : ${danhSachNhomMon}" th:value="${nhomMon.maNhomMon}" th:text="${nhomMon.tenNhomMon}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group--full">
+                        <label class="form-label">Hình ảnh món</label>
+                        <input type="file" class="form-control" name="hinhAnhFile" accept="image/*" data-image-input>
+                        <input type="hidden" th:field="*{hinhAnh}">
+                        <p class="hint-text">Chọn file ảnh để tải lên. Nếu không chọn ảnh mới, hệ thống giữ ảnh hiện tại.</p>
+                        <div class="image-preview" th:if="${monForm.hinhAnh != null and monForm.hinhAnh != ''}">
+                            <img th:src="@{'/uploads/mon/' + ${monForm.hinhAnh}}" alt="Ảnh món">
+                        </div>
+                        <div class="image-preview image-preview--empty" data-image-preview th:if="${monForm.hinhAnh == null or monForm.hinhAnh == ''}">
+                            <span>Chưa có ảnh xem trước</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-control" th:field="*{trangThai}">
+                            <option value="true">Đang bán</option>
+                            <option value="false">Ngừng bán</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group--full">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" th:field="*{moTa}" rows="4" placeholder="Nhập mô tả món"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" th:text="${formMode == 'create' ? 'Tạo món' : 'Lưu thay đổi'}"></button>
+                    <a th:href="@{/mon}" class="btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+</body>
+</html>

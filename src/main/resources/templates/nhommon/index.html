@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Nhóm món', ~{::content})">
+<div th:replace="layout/main :: page('Quản lý nhóm món', ~{::content})">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Nhóm món</h2>
-            <p class="placeholder-text">Trang placeholder cho nhóm món.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Quản lý nhóm món</h2>
+                    <p class="section-subtitle">Thêm và chỉnh sửa nhóm món để phân loại menu rõ ràng hơn.</p>
+                </div>
+                <a th:href="@{/nhom-mon/them}" class="btn-primary">Thêm nhóm món</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Mã nhóm</th>
+                        <th>Tên nhóm món</th>
+                        <th>Mô tả</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(danhSachNhomMon)}">
+                        <td colspan="4">Chưa có nhóm món nào.</td>
+                    </tr>
+                    <tr th:each="nhomMon : ${danhSachNhomMon}">
+                        <td th:text="${nhomMon.maNhomMon}"></td>
+                        <td th:text="${nhomMon.tenNhomMon}"></td>
+                        <td th:text="${nhomMon.moTa} ?: '---'"></td>
+                        <td>
+                            <div class="table-actions">
+                                <a th:href="@{'/nhom-mon/sua/' + ${nhomMon.maNhomMon}}" class="btn-secondary btn-small">Sửa</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 </div>

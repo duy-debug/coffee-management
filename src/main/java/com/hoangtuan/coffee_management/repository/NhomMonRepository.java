@@ -7,5 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface NhomMonRepository extends JpaRepository<NhomMon, String> {
 
     List<NhomMon> findByTenNhomMonContainingIgnoreCase(String tenNhomMon);
+
+    boolean existsByTenNhomMonIgnoreCase(String tenNhomMon);
+
+    boolean existsByTenNhomMonIgnoreCaseAndMaNhomMonNot(String tenNhomMon, String maNhomMon);
 }
 
