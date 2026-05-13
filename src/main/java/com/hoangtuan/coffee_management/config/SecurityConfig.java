@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers("/phieu-nhap-kho/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/phieu-xuat-kho/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/bao-cao/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/ban/them", "/ban/them/**", "/ban/sua/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/ban/cap-nhat-trang-thai/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_NHANVIEN")
                         .requestMatchers(
                                 "/ban/**",
                                 "/ban-hang/**",

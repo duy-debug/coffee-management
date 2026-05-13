@@ -1,11 +1,77 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <div th:replace="layout/main :: page('Quản lý bàn', ~{::content})">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Quản lý bàn</h2>
-            <p class="placeholder-text">Trang placeholder quản lý bàn. Sau này sẽ bổ sung danh sách bàn, trạng thái bàn và thao tác cập nhật.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Quản lý bàn</h2>
+                    <p class="section-subtitle">Xem danh sách bàn, lọc trạng thái và cập nhật trạng thái bàn.</p>
+                </div>
+                <a th:href="@{/ban/them}" class="btn-primary" sec:authorize="hasAuthority('ROLE_ADMIN')">Thêm bàn</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form class="search-form" method="get" th:action="@{/ban}">
+                <div class="form-group">
+                    <label class="form-label">Từ khóa</label>
+                    <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã bàn, tên bàn, khu vực">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-control" name="trangThai">
+                        <option value="" th:selected="${trangThaiLoc == null || trangThaiLoc == ''}">Tất cả</option>
+                        <option value="Trống" th:selected="${trangThaiLoc == 'Trống'}">Trống</option>
+                        <option value="Đang phục vụ" th:selected="${trangThaiLoc == 'Đang phục vụ'}">Đang phục vụ</option>
+                        <option value="Chờ thanh toán" th:selected="${trangThaiLoc == 'Chờ thanh toán'}">Chờ thanh toán</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary btn-small">Lọc</button>
+                <a th:href="@{/ban}" class="btn-secondary btn-small">Làm mới</a>
+            </form>
+
+            <div class="ban-grid">
+                <article class="ban-card" th:if="${#lists.isEmpty(danhSachBan)}">
+                    <h3 class="ban-card__title">Chưa có bàn nào</h3>
+                    <p class="ban-card__note">Hãy thêm bàn đầu tiên để bắt đầu quản lý khu vực phục vụ.</p>
+                </article>
+
+                <article class="ban-card" th:each="ban : ${danhSachBan}">
+                    <div class="ban-card__top">
+                        <div>
+                            <h3 class="ban-card__title" th:text="${ban.tenBan}"></h3>
+                            <p class="ban-card__meta">
+                                <span th:text="${ban.maBan}"></span>
+                                <span th:if="${ban.khuVuc != null and ban.khuVuc != ''}" th:text="' • ' + ${ban.khuVuc}"></span>
+                            </p>
+                        </div>
+                        <span class="badge-status"
+                              th:classappend="${ban.trangThai == 'Trống'} ? ' badge-status--success' : (${ban.trangThai == 'Đang phục vụ'} ? ' badge-status--warning' : ' badge-status--danger')"
+                              th:text="${ban.trangThai}"></span>
+                    </div>
+
+                    <p class="ban-card__note" th:text="${ban.ghiChu} ?: 'Chưa có ghi chú'"></p>
+
+                    <form class="ban-status-form" th:action="@{'/ban/cap-nhat-trang-thai/' + ${ban.maBan}}" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Đổi trạng thái</label>
+                            <select class="form-control" name="trangThai">
+                                <option value="Trống" th:selected="${ban.trangThai == 'Trống'}">Trống</option>
+                                <option value="Đang phục vụ" th:selected="${ban.trangThai == 'Đang phục vụ'}">Đang phục vụ</option>
+                                <option value="Chờ thanh toán" th:selected="${ban.trangThai == 'Chờ thanh toán'}">Chờ thanh toán</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary btn-small">Lưu</button>
+                    </form>
+
+                    <div class="ban-card__actions" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                        <a th:href="@{'/ban/sua/' + ${ban.maBan}}" class="btn-secondary btn-small">Sửa bàn</a>
+                    </div>
+                </article>
+            </div>
         </section>
     </div>
 </div>

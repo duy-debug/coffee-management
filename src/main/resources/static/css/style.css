@@ -592,6 +592,11 @@ select {
     color: var(--muted);
 }
 
+.badge-status--warning {
+    background: rgba(245, 134, 51, 0.14);
+    color: var(--brand-700);
+}
+
 .hint-text {
     margin: 4px 0 0;
     color: var(--muted);
@@ -602,6 +607,65 @@ select {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
+}
+
+.ban-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ban-card {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8f1 100%);
+    box-shadow: 0 10px 22px rgba(122, 73, 23, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ban-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.ban-card__title {
+    margin: 0;
+    color: var(--brand-900);
+    font-size: 20px;
+}
+
+.ban-card__meta {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.ban-card__note {
+    margin: 0;
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 48px;
+}
+
+.ban-card__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(245, 134, 51, 0.18);
+}
+
+.ban-status-form {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+    flex-wrap: wrap;
 }
 
 .menu-card {
@@ -796,6 +860,10 @@ select {
     }
 
     .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ban-grid {
         grid-template-columns: 1fr;
     }
 }
