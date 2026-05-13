@@ -1,11 +1,99 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Khuyến mãi', ~{::content})">
+<div th:replace="~{layout/main :: page('Khuyến mãi', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Khuyến mãi</h2>
-            <p class="placeholder-text">Trang placeholder cho quản trị khuyến mãi.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Khuyến mãi</h2>
+                    <p class="section-subtitle">Quản lý chương trình khuyến mãi và theo dõi trạng thái áp dụng.</p>
+                </div>
+                <a th:href="@{/khuyen-mai/them}" class="btn-primary">Thêm khuyến mãi</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <form class="search-form" method="get" th:action="@{/khuyen-mai}">
+                    <div class="form-group">
+                        <label class="form-label">Từ khóa</label>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã hoặc tên khuyến mãi">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại khuyến mãi</label>
+                        <select class="form-control" name="loaiKhuyenMai">
+                            <option value="" th:selected="${loaiKhuyenMaiLoc == null || loaiKhuyenMaiLoc == ''}">Tất cả</option>
+                            <option value="GIAM_TIEN" th:selected="${loaiKhuyenMaiLoc == 'GIAM_TIEN'}">GIAM_TIEN</option>
+                            <option value="GIAM_PHAN_TRAM" th:selected="${loaiKhuyenMaiLoc == 'GIAM_PHAN_TRAM'}">GIAM_PHAN_TRAM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-control" name="trangThai">
+                            <option value="" th:selected="${trangThaiLoc == null || trangThaiLoc == ''}">Tất cả</option>
+                            <option value="true" th:selected="${trangThaiLoc == 'true'}">Đang áp dụng</option>
+                            <option value="false" th:selected="${trangThaiLoc == 'false'}">Ngừng áp dụng</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary btn-small">Lọc</button>
+                    <a th:href="@{/khuyen-mai}" class="btn-secondary btn-small">Làm mới</a>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã KM</th>
+                            <th>Tên khuyến mãi</th>
+                            <th>Loại</th>
+                            <th>Giá trị giảm</th>
+                            <th>Bắt đầu</th>
+                            <th>Kết thúc</th>
+                            <th>Trạng thái</th>
+                            <th class="order-actions-col">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachKhuyenMai)}">
+                            <td colspan="8">Chưa có khuyến mãi nào.</td>
+                        </tr>
+                        <tr th:each="khuyenMai : ${danhSachKhuyenMai}">
+                            <td th:text="${khuyenMai.maKhuyenMai}"></td>
+                            <td th:text="${khuyenMai.tenKhuyenMai}"></td>
+                            <td th:text="${khuyenMai.loaiKhuyenMai}"></td>
+                            <td th:text="${khuyenMai.loaiKhuyenMai == 'GIAM_PHAN_TRAM' ? #numbers.formatDecimal(khuyenMai.giaTriGiam, 0, 'COMMA', 0, 'POINT') + '%' : #numbers.formatDecimal(khuyenMai.giaTriGiam, 0, 'COMMA', 0, 'POINT') + ' đ'}"></td>
+                            <td th:text="${#temporals.format(khuyenMai.ngayBatDau, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${#temporals.format(khuyenMai.ngayKetThuc, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <span class="badge-status" th:classappend="${khuyenMai.badgeClass}" th:text="${khuyenMai.trangThaiHienThi}"></span>
+                            </td>
+                            <td class="order-actions-col">
+                                <div class="action-buttons">
+                                    <a th:href="@{'/khuyen-mai/' + ${khuyenMai.maKhuyenMai}}" class="btn-secondary btn-small">Xem</a>
+                                    <a th:href="@{'/khuyen-mai/sua/' + ${khuyenMai.maKhuyenMai}}" class="btn-primary btn-small">Sửa</a>
+                                    <form th:if="${khuyenMai.trangThai}"
+                                          th:action="@{'/khuyen-mai/ngung/' + ${khuyenMai.maKhuyenMai}}"
+                                          method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="btn-logout btn-small">Ngừng</button>
+                                    </form>
+                                    <form th:if="${!khuyenMai.trangThai}"
+                                          th:action="@{'/khuyen-mai/kich-hoat/' + ${khuyenMai.maKhuyenMai}}"
+                                          method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="btn-primary btn-small">Kích hoạt</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
 </div>

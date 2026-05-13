@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface KhuyenMaiRepository extends JpaRepository<KhuyenMai, String> {
 
     List<KhuyenMai> findByTrangThai(Boolean trangThai);
+
+    List<KhuyenMai> findByTenKhuyenMaiContainingIgnoreCase(String tenKhuyenMai);
 }
 

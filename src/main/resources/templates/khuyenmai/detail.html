@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết khuyến mãi', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết khuyến mãi</h2>
+                    <p class="section-subtitle" th:text="${khuyenMaiDetail.khuyenMai.maKhuyenMai}"></p>
+                </div>
+                <div class="invoice-actions">
+                    <a th:href="@{'/khuyen-mai/sua/' + ${khuyenMaiDetail.khuyenMai.maKhuyenMai}}" class="btn-primary">Sửa</a>
+                    <a th:href="@{/khuyen-mai}" class="btn-secondary">Quay lại</a>
+                </div>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="invoice-meta-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tên khuyến mãi</p>
+                        <div class="profile-card__value" th:text="${khuyenMaiDetail.khuyenMai.tenKhuyenMai}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Loại khuyến mãi</p>
+                        <div class="profile-card__value" th:text="${khuyenMaiDetail.khuyenMai.loaiKhuyenMai}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Giá trị giảm</p>
+                        <div class="profile-card__value" th:text="${khuyenMaiDetail.khuyenMai.loaiKhuyenMai == 'GIAM_PHAN_TRAM' ? #numbers.formatDecimal(khuyenMaiDetail.khuyenMai.giaTriGiam, 0, 'COMMA', 0, 'POINT') + '%' : #numbers.formatDecimal(khuyenMaiDetail.khuyenMai.giaTriGiam, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Trạng thái</p>
+                        <div class="profile-card__value" th:text="${khuyenMaiDetail.conHieuLuc ? 'Đang áp dụng' : (khuyenMaiDetail.khuyenMai.trangThai ? 'Hết hạn' : 'Ngừng áp dụng')}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="invoice-summary">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Số hóa đơn đã áp dụng</p>
+                        <div class="profile-card__value" th:text="${khuyenMaiDetail.soHoaDonDaApDung}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Tổng tiền đã giảm</p>
+                        <div class="profile-card__value" th:text="|${#numbers.formatDecimal(khuyenMaiDetail.tongTienDaGiam, 0, 'COMMA', 0, 'POINT')} đ|"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
