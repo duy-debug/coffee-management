@@ -7,6 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NhanVienRepository extends JpaRepository<NhanVien, String> {
 
+    List<NhanVien> findByMaNhanVienContainingIgnoreCaseOrHoTenContainingIgnoreCaseOrSoDienThoaiContainingIgnoreCase(
+            String maNhanVien,
+            String hoTen,
+            String soDienThoai
+    );
+
+    List<NhanVien> findByTrangThai(Boolean trangThai);
+
     List<NhanVien> findByHoTenContainingIgnoreCase(String hoTen);
 
     Optional<NhanVien> findBySoDienThoai(String soDienThoai);

@@ -4,8 +4,42 @@
 <div th:replace="layout/main :: page('Vai trò', ~{::content})">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Vai trò</h2>
-            <p class="placeholder-text">Trang placeholder cho quản lý vai trò.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Vai trò cố định</h2>
+                    <p class="section-subtitle">Hệ thống chỉ sử dụng 2 vai trò: ROLE_ADMIN và ROLE_NHANVIEN.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                Vai trò trong hệ thống là cố định, không có CRUD và không dùng phân quyền động.
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Mã vai trò</th>
+                        <th>Tên vai trò</th>
+                        <th>Mô tả</th>
+                        <th>Phạm vi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(danhSachVaiTro)}">
+                        <td colspan="4">Chưa có dữ liệu vai trò.</td>
+                    </tr>
+                    <tr th:each="vaiTro : ${danhSachVaiTro}">
+                        <td th:text="${vaiTro.maVaiTro}"></td>
+                        <td>
+                            <span class="badge-status badge-status--neutral" th:text="${vaiTro.tenVaiTro}"></span>
+                        </td>
+                        <td th:text="${vaiTro.moTa} ?: '---'"></td>
+                        <td th:text="${vaiTro.tenVaiTro == 'ROLE_ADMIN' ? 'Toàn bộ hệ thống' : 'Bán hàng, bàn, đơn hàng, hóa đơn, khách hàng, cá nhân'}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 </div>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="layout/main :: page('Nhân viên', ~{::content})">
+    <div th:fragment="content">
+        <section class="page-card form-card">
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title" th:text="${formMode == 'create' ? 'Thêm nhân viên' : 'Cập nhật nhân viên'}"></h2>
+                    <p class="section-subtitle">Quản lý thông tin nhân viên và trạng thái làm việc.</p>
+                </div>
+                <a th:href="@{/nhan-vien}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{${formAction}}" th:object="${nhanVienForm}" method="post" class="profile-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Mã nhân viên</label>
+                        <input type="text" class="form-control" th:field="*{maNhanVien}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" th:field="*{hoTen}" placeholder="Nhập họ tên">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" th:field="*{soDienThoai}" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chức vụ</label>
+                        <input type="text" class="form-control" th:field="*{chucVu}" list="chucVuOptions" placeholder="Admin hoặc Nhân viên bán hàng">
+                        <datalist id="chucVuOptions">
+                            <option value="Admin"></option>
+                            <option value="Nhân viên bán hàng"></option>
+                        </datalist>
+                        <p class="hint-text">Gợi ý: Admin, thu ngân</p>
+                    </div>
+                    <div class="form-group form-group--full">
+                        <label class="form-label">Địa chỉ</label>
+                        <textarea class="form-control" th:field="*{diaChi}" rows="4" placeholder="Nhập địa chỉ"></textarea>
+                    </div>
+                    <div class="form-group form-group--full" th:if="${formMode == 'create'}">
+                        <label class="form-label">
+                            <input type="checkbox" th:field="*{trangThai}">
+                            Đang làm việc
+                        </label>
+                        <p class="hint-text">Bỏ chọn nếu muốn tạo nhân viên ở trạng thái ngừng làm.</p>
+                    </div>
+                    <div class="form-group form-group--full" th:if="${formMode == 'edit'}">
+                        <label class="form-label">Trạng thái làm việc</label>
+                        <input type="text" class="form-control" th:value="${nhanVienForm.trangThai} ? 'Đang làm' : 'Ngừng làm'" readonly>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" th:text="${formMode == 'create' ? 'Tạo nhân viên' : 'Lưu thay đổi'}"></button>
+                    <a th:href="@{/nhan-vien}" class="btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+</body>
+</html>
