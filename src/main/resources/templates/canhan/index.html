@@ -4,8 +4,58 @@
 <div th:replace="layout/main :: page('Thông tin cá nhân', ~{::content})">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Thông tin cá nhân</h2>
-            <p class="placeholder-text">Trang placeholder cho thông tin cá nhân của người dùng đang đăng nhập.</p>
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title">Thông tin cá nhân</h2>
+                    <p class="section-subtitle">Thông tin của tài khoản đang đăng nhập.</p>
+                </div>
+                <div class="profile-actions">
+                    <a th:href="@{/ca-nhan/cap-nhat}" class="btn-primary">Cập nhật thông tin</a>
+                    <a th:href="@{/ca-nhan/doi-mat-khau}" class="btn-secondary">Đổi mật khẩu</a>
+                </div>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="profile-grid" th:if="${thongTinCaNhan != null}">
+                <div class="profile-card">
+                    <div class="profile-card__label">Tên đăng nhập</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.tenDangNhap}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Vai trò</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.vaiTro}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Mã nhân viên</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.maNhanVien}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Họ tên nhân viên</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.hoTen}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Số điện thoại</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.soDienThoai}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Địa chỉ</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.diaChi} ?: 'Chưa cập nhật'"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Chức vụ</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.chucVu}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Trạng thái tài khoản</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.trangThaiTaiKhoan}"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card__label">Trạng thái nhân viên</div>
+                    <div class="profile-card__value" th:text="${thongTinCaNhan.trangThaiNhanVien}"></div>
+                </div>
+            </div>
         </section>
     </div>
 </div>

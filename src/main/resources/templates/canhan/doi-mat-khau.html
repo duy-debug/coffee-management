@@ -3,9 +3,38 @@
 <body>
 <div th:replace="layout/main :: page('Đổi mật khẩu', ~{::content})">
     <div th:fragment="content">
-        <section class="page-card">
-            <h2 class="placeholder-title">Đổi mật khẩu</h2>
-            <p class="placeholder-text">Trang placeholder cho đổi mật khẩu cá nhân.</p>
+        <section class="page-card form-card">
+            <div class="page-head">
+                <div>
+                    <h2 class="section-title">Đổi mật khẩu</h2>
+                    <p class="section-subtitle">Hệ thống sẽ mã hóa mật khẩu mới bằng BCrypt.</p>
+                </div>
+                <a th:href="@{/ca-nhan}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/ca-nhan/doi-mat-khau}" th:object="${doiMatKhau}" method="post" class="profile-form">
+                <div class="form-grid">
+                    <div class="form-group form-group--full">
+                        <label class="form-label">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" th:field="*{matKhauHienTai}" placeholder="Nhập mật khẩu hiện tại">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu mới</label>
+                        <input type="password" class="form-control" th:field="*{matKhauMoi}" placeholder="Nhập mật khẩu mới">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Xác nhận mật khẩu mới</label>
+                        <input type="password" class="form-control" th:field="*{xacNhanMatKhauMoi}" placeholder="Nhập lại mật khẩu mới">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Cập nhật mật khẩu</button>
+                    <a th:href="@{/ca-nhan}" class="btn-secondary">Hủy</a>
+                </div>
+            </form>
         </section>
     </div>
 </div>
