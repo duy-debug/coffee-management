@@ -719,6 +719,30 @@ select {
     min-width: 0;
 }
 
+.phieu-xuat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.phieu-xuat-form .data-table {
+    min-width: 820px;
+}
+
+.phieu-xuat-form .stock-cell {
+    white-space: nowrap;
+    font-weight: 700;
+    color: var(--brand-800);
+}
+
+.phieu-xuat-form select.form-control,
+.phieu-xuat-form input.form-control,
+.phieu-xuat-form textarea.form-control {
+    min-width: 0;
+}
+
 .warehouse-history {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

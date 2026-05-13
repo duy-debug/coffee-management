@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết phiếu xuất kho', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết phiếu xuất kho</h2>
+                    <p class="section-subtitle" th:text="${phieuXuatDetail.maPhieuXuat}"></p>
+                </div>
+                <a th:href="@{/phieu-xuat-kho}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="profile-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Ngày xuất</p>
+                        <div class="profile-card__value" th:text="${#temporals.format(phieuXuatDetail.ngayXuat, 'dd/MM/yyyy HH:mm')}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Nhân viên xuất</p>
+                        <div class="profile-card__value" th:text="${phieuXuatDetail.tenNhanVien}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Lý do xuất</p>
+                        <div class="profile-card__value" th:text="${phieuXuatDetail.lyDoXuat != null ? phieuXuatDetail.lyDoXuat : '---'}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="toolbar" style="margin-bottom: 14px;">
+                    <div>
+                        <h3 class="section-title" style="font-size: 18px;">Danh sách chi tiết</h3>
+                        <p class="hint-text">Số lượng xuất được ghi theo từng nguyên liệu và đơn vị tính.</p>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã NL</th>
+                            <th>Tên nguyên liệu</th>
+                            <th>Số lượng xuất</th>
+                            <th>Đơn vị tính</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(phieuXuatDetail.danhSachChiTiet)}">
+                            <td colspan="4">Không có chi tiết phiếu xuất.</td>
+                        </tr>
+                        <tr th:each="item : ${phieuXuatDetail.danhSachChiTiet}">
+                            <td th:text="${item.maNguyenLieu}"></td>
+                            <td th:text="${item.tenNguyenLieu}"></td>
+                            <td th:text="${item.soLuongXuat}"></td>
+                            <td th:text="${item.donViTinh}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

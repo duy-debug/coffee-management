@@ -29,6 +29,10 @@ public interface NguyenLieuService {
 
     void tangTonKho(String maNguyenLieu, Integer soLuongNhap);
 
+    void giamTonKho(String maNguyenLieu, Integer soLuongXuat);
+
+    boolean kiemTraDuTonKho(String maNguyenLieu, Integer soLuongXuat);
+
     NguyenLieuDetailDTO getChiTiet(String maNguyenLieu);
 
     boolean kiemTraSapHet(NguyenLieu nguyenLieu);

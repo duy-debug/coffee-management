@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page(${formMode == 'create' ? 'Tạo phiếu xuất kho' : 'Sửa phiếu xuất kho'}, ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title" th:text="${formMode == 'create' ? 'Tạo phiếu xuất kho' : 'Sửa phiếu xuất kho'}"></h2>
+                    <p class="section-subtitle">Xuất nhiều nguyên liệu trong một phiếu, tồn kho sẽ giảm tự động khi lưu.</p>
+                </div>
+                <a th:href="@{/phieu-xuat-kho}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{${formAction}}" method="post" class="phieu-xuat-form" th:object="${phieuXuatForm}">
+                <div class="content-card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Mã phiếu xuất</label>
+                            <input type="text" class="form-control" th:field="*{maPhieuXuat}" readonly>
+                            <p class="hint-text">Mã được sinh tự động theo dạng PX001, PX002, PX003.</p>
+                        </div>
+                        <div class="form-group form-group--full">
+                            <label class="form-label">Lý do xuất</label>
+                            <textarea class="form-control" th:field="*{lyDoXuat}" rows="3" placeholder="Nhập lý do xuất kho"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="toolbar" style="margin-bottom: 14px;">
+                        <div>
+                            <h3 class="section-title" style="font-size: 18px;">Danh sách nguyên liệu xuất</h3>
+                            <p class="hint-text">Chọn nguyên liệu, xem tồn kho hiện tại và nhập số lượng cần xuất.</p>
+                        </div>
+                        <button type="button" class="btn-primary btn-small" id="addRowBtn">Thêm dòng</button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="data-table" id="phieuXuatTable">
+                            <thead>
+                            <tr>
+                                <th>Nguyên liệu</th>
+                                <th>Tồn hiện tại</th>
+                                <th>Số lượng xuất</th>
+                                <th>Thành tiền</th>
+                                <th class="order-actions-col">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody id="phieuXuatBody">
+                            <tr th:each="chiTiet, stat : *{danhSachChiTiet}" class="phieu-xuat-row" th:attr="data-index=${stat.index}">
+                                <td>
+                                    <select class="form-control nguyen-lieu-select" th:name="|danhSachChiTiet[${stat.index}].maNguyenLieu|" th:id="|maNguyenLieu_${stat.index}|">
+                                        <option value="">-- Chọn nguyên liệu --</option>
+                                        <option th:each="nguyenLieu : ${danhSachNguyenLieu}"
+                                                th:value="${nguyenLieu.maNguyenLieu}"
+                                                th:attr="data-stock=${nguyenLieu.soLuongTon}, data-unit=${nguyenLieu.donViTinh}"
+                                                th:text="${nguyenLieu.maNguyenLieu + ' - ' + nguyenLieu.tenNguyenLieu}"
+                                                th:selected="${chiTiet.maNguyenLieu == nguyenLieu.maNguyenLieu}"></option>
+                                    </select>
+                                </td>
+                                <td class="stock-cell">---</td>
+                                <td>
+                                    <input type="number" min="1" class="form-control so-luong-input"
+                                           th:name="|danhSachChiTiet[${stat.index}].soLuongXuat|"
+                                           th:id="|soLuongXuat_${stat.index}|"
+                                           th:value="${chiTiet.soLuongXuat}">
+                                </td>
+                                <td class="thanh-tien-cell">
+                                    <span class="row-total">0</span>
+                                </td>
+                                <td class="order-actions-col">
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn-logout btn-small remove-row-btn">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 18px;">
+                        <button type="submit" class="btn-primary">Lưu phiếu xuất</button>
+                        <a th:href="@{/phieu-xuat-kho}" class="btn-secondary">Hủy</a>
+                    </div>
+                </div>
+            </form>
+
+            <template id="phieuXuatRowTemplate">
+                <tr class="phieu-xuat-row" data-index="__INDEX__">
+                    <td>
+                        <select class="form-control nguyen-lieu-select" name="danhSachChiTiet[__INDEX__].maNguyenLieu" id="maNguyenLieu___INDEX__">
+                            <option value="">-- Chọn nguyên liệu --</option>
+                            <option th:each="nguyenLieu : ${danhSachNguyenLieu}"
+                                    th:value="${nguyenLieu.maNguyenLieu}"
+                                    th:attr="data-stock=${nguyenLieu.soLuongTon}, data-unit=${nguyenLieu.donViTinh}"
+                                    th:text="${nguyenLieu.maNguyenLieu + ' - ' + nguyenLieu.tenNguyenLieu}"></option>
+                        </select>
+                    </td>
+                    <td class="stock-cell">---</td>
+                    <td>
+                        <input type="number" min="1" class="form-control so-luong-input" name="danhSachChiTiet[__INDEX__].soLuongXuat" id="soLuongXuat___INDEX__" value="">
+                    </td>
+                    <td class="thanh-tien-cell">
+                        <span class="row-total">0</span>
+                    </td>
+                    <td class="order-actions-col">
+                        <div class="action-buttons">
+                            <button type="button" class="btn-logout btn-small remove-row-btn">Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+
+            <script th:src="@{/js/phieuxuatkho.js}" defer></script>
+        </section>
+    </div>
+</div>
+</body>
+</html>

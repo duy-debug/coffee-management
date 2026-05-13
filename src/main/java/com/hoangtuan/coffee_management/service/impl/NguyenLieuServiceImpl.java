@@ -144,6 +144,31 @@ public class NguyenLieuServiceImpl implements NguyenLieuService {
     }
 
     @Override
+    @Transactional
+    public void giamTonKho(String maNguyenLieu, Integer soLuongXuat) {
+        if (soLuongXuat == null || soLuongXuat <= 0) {
+            throw new IllegalArgumentException("So luong xuat phai lon hon 0.");
+        }
+        if (!kiemTraDuTonKho(maNguyenLieu, soLuongXuat)) {
+            throw new IllegalArgumentException("Khong du ton kho cho nguyen lieu.");
+        }
+        NguyenLieu nguyenLieu = findById(maNguyenLieu);
+        nguyenLieu.setSoLuongTon((nguyenLieu.getSoLuongTon() == null ? 0 : nguyenLieu.getSoLuongTon()) - soLuongXuat);
+        nguyenLieuRepository.save(nguyenLieu);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean kiemTraDuTonKho(String maNguyenLieu, Integer soLuongXuat) {
+        if (!StringUtils.hasText(maNguyenLieu) || soLuongXuat == null || soLuongXuat <= 0) {
+            return false;
+        }
+        NguyenLieu nguyenLieu = findById(maNguyenLieu);
+        Integer soLuongTon = nguyenLieu.getSoLuongTon() == null ? 0 : nguyenLieu.getSoLuongTon();
+        return soLuongTon >= soLuongXuat;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public NguyenLieuDetailDTO getChiTiet(String maNguyenLieu) {
         NguyenLieu nguyenLieu = findById(maNguyenLieu);

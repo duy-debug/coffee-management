@@ -1,11 +1,64 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Phiếu xuất kho', ~{::content})">
+<div th:replace="~{layout/main :: page('Phiếu xuất kho', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
-            <h2 class="placeholder-title">Phiếu xuất kho</h2>
-            <p class="placeholder-text">Trang placeholder cho xuất kho.</p>
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Phiếu xuất kho</h2>
+                    <p class="section-subtitle">Theo dõi các phiếu xuất nguyên liệu và kiểm soát lý do xuất kho.</p>
+                </div>
+                <a th:href="@{/phieu-xuat-kho/them}" class="btn-primary">Tạo phiếu xuất</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <form class="search-form" method="get" th:action="@{/phieu-xuat-kho}">
+                    <div class="form-group">
+                        <label class="form-label">Từ khóa</label>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Mã phiếu, lý do hoặc nhân viên">
+                    </div>
+                    <button type="submit" class="btn-primary btn-small">Lọc</button>
+                    <a th:href="@{/phieu-xuat-kho}" class="btn-secondary btn-small">Làm mới</a>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã phiếu</th>
+                            <th>Ngày xuất</th>
+                            <th>Nhân viên</th>
+                            <th>Lý do xuất</th>
+                            <th>Tổng dòng</th>
+                            <th class="order-actions-col">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachPhieuXuat)}">
+                            <td colspan="6">Chưa có phiếu xuất kho nào.</td>
+                        </tr>
+                        <tr th:each="phieu : ${danhSachPhieuXuat}">
+                            <td th:text="${phieu.maPhieuXuat}"></td>
+                            <td th:text="${#temporals.format(phieu.ngayXuat, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${phieu.tenNhanVien}"></td>
+                            <td th:text="${phieu.lyDoXuat != null ? phieu.lyDoXuat : '---'}"></td>
+                            <td th:text="${phieu.tongSoNguyenLieu}"></td>
+                            <td class="order-actions-col">
+                                <div class="action-buttons">
+                                    <a th:href="@{'/phieu-xuat-kho/' + ${phieu.maPhieuXuat}}" class="btn-secondary btn-small">Xem</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
 </div>
