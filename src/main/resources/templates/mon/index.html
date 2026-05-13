@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="layout/main :: page('Quản lý món', ~{::content})">
+<div th:replace="~{layout/main :: page('Quản lý món', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
             <div class="toolbar">
@@ -65,7 +65,7 @@
                         </td>
                         <td th:text="${mon.tenMon}"></td>
                         <td th:text="${mon.nhomMon != null ? mon.nhomMon.tenNhomMon : '---'}"></td>
-                        <td th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                        <td th:text="|${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></td>
                         <td>
                             <span class="badge-status"
                                   th:classappend="${mon.trangThai} ? ' badge-status--success' : ' badge-status--danger'"
@@ -76,9 +76,11 @@
                             <div class="table-actions">
                                 <a th:href="@{'/mon/sua/' + ${mon.maMon}}" class="btn-secondary btn-small">Sửa</a>
                                 <form th:if="${mon.trangThai}" th:action="@{'/mon/ngung-ban/' + ${mon.maMon}}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                     <button type="submit" class="btn-logout btn-small">Ngừng bán</button>
                                 </form>
                                 <form th:if="${!mon.trangThai}" th:action="@{'/mon/mo-ban/' + ${mon.maMon}}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                     <button type="submit" class="btn-primary btn-small">Mở bán</button>
                                 </form>
                             </div>

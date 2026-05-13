@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle} + ' | Coffee Management System'">Coffee Management System</title>
+    <title th:text="${pageTitle} + ' - Coffee Management System'">Coffee Management System</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <script th:src="@{/js/main.js}" defer></script>
 </head>
@@ -197,6 +197,7 @@
             </div>
 
             <form th:action="@{/logout}" method="post" class="logout-form">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <button type="submit" class="nav-link" style="width: 100%; justify-content: flex-start;">
                     <span class="nav-link__left">
                         <span class="nav-icon">⏻</span>
@@ -225,6 +226,7 @@
                     </div>
                 </div>
                 <form th:action="@{/logout}" method="post" class="logout-form">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <button type="submit" class="btn-logout">Đăng xuất</button>
                 </form>
             </div>

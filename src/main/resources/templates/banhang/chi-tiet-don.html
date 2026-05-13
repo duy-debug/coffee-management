@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết đơn hàng', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết đơn hàng</h2>
+                    <p class="section-subtitle" th:text="|${donHang.maDonHang} • ${donHang.loaiDonHang} • ${donHang.trangThai}|"></p>
+                </div>
+                <a th:href="@{/ban-hang}" class="btn-secondary">Quay lại bán hàng</a>
+            </div>
+
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="page-card" style="margin-bottom: 18px;">
+                <p class="placeholder-text"><strong>Ngày đặt:</strong> <span th:text="${donHang.ngayDat}"></span></p>
+                <p class="placeholder-text"><strong>Nhân viên:</strong> <span th:text="${donHang.nhanVien != null ? donHang.nhanVien.hoTen : '---'}"></span></p>
+                <p class="placeholder-text"><strong>Bàn:</strong> <span th:text="${donHang.ban != null ? donHang.ban.tenBan : 'Không áp dụng'}"></span></p>
+                <p class="placeholder-text"><strong>Tổng tiền:</strong> <span th:text="|${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></span></p>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Mã món</th>
+                        <th>Tên món</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${chiTietDonHangs}">
+                        <td th:text="${item.mon != null ? item.mon.maMon : '---'}"></td>
+                        <td th:text="${item.mon != null ? item.mon.tenMon : '---'}"></td>
+                        <td th:text="${item.soLuong}"></td>
+                        <td th:text="|${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                        <td th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <form th:if="${donHang.trangThai != 'Đã hủy' && donHang.trangThai != 'Đã thanh toán'}"
+                  th:action="@{'/ban-hang/huy-don/' + ${donHang.maDonHang}}"
+                  method="post"
+                  style="margin-top: 18px;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn-logout">Hủy đơn</button>
+            </form>
+        </section>
+    </div>
+</div>
+</body>
+</html>

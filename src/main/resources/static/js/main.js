@@ -50,6 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    const orderTypeInputs = document.querySelectorAll("[data-order-type]");
+    const tableSection = document.querySelector("[data-table-section]");
+    const toggleTableSection = () => {
+        const selected = document.querySelector("[data-order-type]:checked");
+        const isDineIn = selected && selected.value === "Dùng tại quán";
+        if (!tableSection) {
+            return;
+        }
+        tableSection.style.display = isDineIn ? "block" : "none";
+    };
+
+    orderTypeInputs.forEach((input) => input.addEventListener("change", toggleTableSection));
+    toggleTableSection();
+
     const normalizePath = (path) => (path.length > 1 ? path.replace(/\/$/, "") : path);
     const currentPath = normalizePath(window.location.pathname);
 

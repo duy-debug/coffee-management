@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-<div th:replace="layout/main :: page('Menu / Tra cứu món', ~{::content})">
+<div th:replace="~{layout/main :: page('Menu / Tra cứu món', ~{::content})}">
     <div th:fragment="content">
         <section class="page-card">
             <div class="toolbar">
@@ -46,7 +46,7 @@
                             <h3 th:text="${mon.tenMon}"></h3>
                             <p class="menu-card__meta" th:text="${mon.nhomMon != null ? mon.nhomMon.tenNhomMon : 'Chưa có nhóm'}"></p>
                         </div>
-                        <div class="menu-card__price" th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
+                        <div class="menu-card__price" th:text="|${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></div>
                     </div>
                     <p class="menu-card__desc" th:text="${mon.moTa} ?: 'Chưa có mô tả'"></p>
                     <div class="menu-card__footer">
