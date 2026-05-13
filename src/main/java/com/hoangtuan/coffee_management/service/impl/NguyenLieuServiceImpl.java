@@ -133,6 +133,17 @@ public class NguyenLieuServiceImpl implements NguyenLieuService {
     }
 
     @Override
+    @Transactional
+    public void tangTonKho(String maNguyenLieu, Integer soLuongNhap) {
+        if (soLuongNhap == null || soLuongNhap <= 0) {
+            throw new IllegalArgumentException("So luong nhap phai lon hon 0.");
+        }
+        NguyenLieu nguyenLieu = findById(maNguyenLieu);
+        nguyenLieu.setSoLuongTon((nguyenLieu.getSoLuongTon() == null ? 0 : nguyenLieu.getSoLuongTon()) + soLuongNhap);
+        nguyenLieuRepository.save(nguyenLieu);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public NguyenLieuDetailDTO getChiTiet(String maNguyenLieu) {
         NguyenLieu nguyenLieu = findById(maNguyenLieu);

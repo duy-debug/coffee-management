@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page(${formMode == 'create' ? 'Tạo phiếu nhập kho' : 'Sửa phiếu nhập kho'}, ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title" th:text="${formMode == 'create' ? 'Tạo phiếu nhập kho' : 'Sửa phiếu nhập kho'}"></h2>
+                    <p class="section-subtitle">Nhập nhiều nguyên liệu trong một phiếu, tồn kho sẽ được cộng tự động khi lưu.</p>
+                </div>
+                <a th:href="@{/phieu-nhap-kho}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{${formAction}}" method="post" class="phieu-nhap-form" th:object="${phieuNhapForm}">
+                <div class="content-card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Mã phiếu nhập</label>
+                            <input type="text" class="form-control" th:field="*{maPhieuNhap}" readonly>
+                            <p class="hint-text">Mã được sinh tự động theo dạng PN001, PN002, PN003.</p>
+                        </div>
+                        <div class="form-group form-group--full">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea class="form-control" th:field="*{ghiChu}" rows="3" placeholder="Nhập ghi chú cho phiếu nhập"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="toolbar" style="margin-bottom: 14px;">
+                        <div>
+                            <h3 class="section-title" style="font-size: 18px;">Danh sách nguyên liệu nhập</h3>
+                            <p class="hint-text">Thêm hoặc xóa dòng tùy nhu cầu. Tổng tiền sẽ tự cập nhật ở cuối bảng.</p>
+                        </div>
+                        <button type="button" class="btn-primary btn-small" id="addRowBtn">Thêm dòng</button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="data-table" id="phieuNhapTable">
+                            <thead>
+                            <tr>
+                                <th>Nguyên liệu</th>
+                                <th>Số lượng nhập</th>
+                                <th>Đơn giá nhập</th>
+                                <th>Thành tiền</th>
+                                <th class="order-actions-col">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody id="phieuNhapBody">
+                            <tr th:each="chiTiet, stat : *{danhSachChiTiet}" class="phieu-nhap-row" th:attr="data-index=${stat.index}">
+                                <td>
+                                    <select class="form-control nguyen-lieu-select" th:name="|danhSachChiTiet[${stat.index}].maNguyenLieu|" th:id="|maNguyenLieu_${stat.index}|">
+                                        <option value="">-- Chọn nguyên liệu --</option>
+                                        <option th:each="nguyenLieu : ${danhSachNguyenLieu}"
+                                                th:value="${nguyenLieu.maNguyenLieu}"
+                                                th:text="${nguyenLieu.maNguyenLieu + ' - ' + nguyenLieu.tenNguyenLieu}"
+                                                th:selected="${chiTiet.maNguyenLieu == nguyenLieu.maNguyenLieu}"></option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" min="1" class="form-control so-luong-input"
+                                           th:name="|danhSachChiTiet[${stat.index}].soLuongNhap|"
+                                           th:id="|soLuongNhap_${stat.index}|"
+                                           th:value="${chiTiet.soLuongNhap}">
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" min="0" class="form-control don-gia-input"
+                                           th:name="|danhSachChiTiet[${stat.index}].donGiaNhap|"
+                                           th:id="|donGiaNhap_${stat.index}|"
+                                           th:value="${chiTiet.donGiaNhap}">
+                                </td>
+                                <td class="thanh-tien-cell">
+                                    <span class="row-total">0 đ</span>
+                                </td>
+                                <td class="order-actions-col">
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn-logout btn-small remove-row-btn">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align: right; font-weight: 700;">Tổng tiền phiếu nhập</td>
+                                <td colspan="2"><span id="grandTotal" class="profile-card__value">0 đ</span></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 18px;">
+                        <button type="submit" class="btn-primary">Lưu phiếu nhập</button>
+                        <a th:href="@{/phieu-nhap-kho}" class="btn-secondary">Hủy</a>
+                    </div>
+                </div>
+            </form>
+
+            <template id="phieuNhapRowTemplate">
+                <tr class="phieu-nhap-row" data-index="__INDEX__">
+                    <td>
+                        <select class="form-control nguyen-lieu-select" name="danhSachChiTiet[__INDEX__].maNguyenLieu" id="maNguyenLieu___INDEX__">
+                            <option value="">-- Chọn nguyên liệu --</option>
+                            <option th:each="nguyenLieu : ${danhSachNguyenLieu}"
+                                    th:value="${nguyenLieu.maNguyenLieu}"
+                                    th:text="${nguyenLieu.maNguyenLieu + ' - ' + nguyenLieu.tenNguyenLieu}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" min="1" class="form-control so-luong-input" name="danhSachChiTiet[__INDEX__].soLuongNhap" id="soLuongNhap___INDEX__" value="1">
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" min="0" class="form-control don-gia-input" name="danhSachChiTiet[__INDEX__].donGiaNhap" id="donGiaNhap___INDEX__" value="0">
+                    </td>
+                    <td class="thanh-tien-cell">
+                        <span class="row-total">0 đ</span>
+                    </td>
+                    <td class="order-actions-col">
+                        <div class="action-buttons">
+                            <button type="button" class="btn-logout btn-small remove-row-btn">Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+
+            <script th:src="@{/js/phieunhapkho.js}" defer></script>
+        </section>
+    </div>
+</div>
+</body>
+</html>

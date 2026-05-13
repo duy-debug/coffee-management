@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout/main :: page('Chi tiết phiếu nhập kho', ~{::content})}">
+    <div th:fragment="content">
+        <section class="page-card">
+            <div class="toolbar">
+                <div>
+                    <h2 class="section-title">Chi tiết phiếu nhập kho</h2>
+                    <p class="section-subtitle" th:text="${phieuNhapDetail.maPhieuNhap}"></p>
+                </div>
+                <a th:href="@{/phieu-nhap-kho}" class="btn-secondary">Quay lại</a>
+            </div>
+
+            <div class="content-card" style="margin-bottom: 18px;">
+                <div class="profile-grid">
+                    <div class="profile-card">
+                        <p class="profile-card__label">Ngày nhập</p>
+                        <div class="profile-card__value" th:text="${#temporals.format(phieuNhapDetail.ngayNhap, 'dd/MM/yyyy HH:mm')}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Nhân viên nhập</p>
+                        <div class="profile-card__value" th:text="${phieuNhapDetail.tenNhanVien}"></div>
+                    </div>
+                    <div class="profile-card">
+                        <p class="profile-card__label">Ghi chú</p>
+                        <div class="profile-card__value" th:text="${phieuNhapDetail.ghiChu != null ? phieuNhapDetail.ghiChu : '---'}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="toolbar" style="margin-bottom: 14px;">
+                    <div>
+                        <h3 class="section-title" style="font-size: 18px;">Danh sách chi tiết</h3>
+                        <p class="hint-text">Giá trị thành tiền được tính theo số lượng nhập nhân đơn giá nhập.</p>
+                    </div>
+                    <div class="profile-card" style="min-width: 240px;">
+                        <p class="profile-card__label">Tổng tiền phiếu nhập</p>
+                        <div class="profile-card__value" th:text="${#numbers.formatDecimal(phieuNhapDetail.tongTien, 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Mã NL</th>
+                            <th>Tên nguyên liệu</th>
+                            <th>Số lượng nhập</th>
+                            <th>Đơn giá nhập</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(phieuNhapDetail.danhSachChiTiet)}">
+                            <td colspan="5">Không có chi tiết phiếu nhập.</td>
+                        </tr>
+                        <tr th:each="item : ${phieuNhapDetail.danhSachChiTiet}">
+                            <td th:text="${item.maNguyenLieu}"></td>
+                            <td th:text="${item.tenNguyenLieu}"></td>
+                            <td th:text="${item.soLuongNhap}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.donGiaNhap, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                            <td th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

@@ -686,6 +686,39 @@ select {
     gap: 14px;
 }
 
+.phieu-nhap-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.phieu-nhap-form .data-table {
+    min-width: 820px;
+}
+
+.phieu-nhap-form .phieu-nhap-row td {
+    vertical-align: middle;
+}
+
+.phieu-nhap-form .thanh-tien-cell {
+    white-space: nowrap;
+    font-weight: 700;
+    color: var(--brand-800);
+}
+
+.phieu-nhap-form tfoot td {
+    background: #fff8f1;
+    font-weight: 700;
+}
+
+.phieu-nhap-form select.form-control,
+.phieu-nhap-form input.form-control,
+.phieu-nhap-form textarea.form-control {
+    min-width: 0;
+}
+
 .warehouse-history {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1292,6 +1325,10 @@ select {
     .invoice-summary,
     .warehouse-history {
         grid-template-columns: 1fr;
+    }
+
+    .phieu-nhap-form .data-table {
+        min-width: 760px;
     }
 
     .menu-grid {

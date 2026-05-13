@@ -27,6 +27,8 @@ public interface NguyenLieuService {
 
     void update(String maNguyenLieu, NguyenLieuFormDTO dto);
 
+    void tangTonKho(String maNguyenLieu, Integer soLuongNhap);
+
     NguyenLieuDetailDTO getChiTiet(String maNguyenLieu);
 
     boolean kiemTraSapHet(NguyenLieu nguyenLieu);
