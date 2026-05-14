@@ -593,6 +593,33 @@ select {
     min-width: 0;
 }
 
+.search-form .btn-primary,
+.search-form .btn-secondary,
+.report-filter-bar .btn-primary,
+.report-filter-bar .btn-secondary {
+    height: 46px;
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    align-self: end;
+    line-height: 1;
+}
+
+.search-form .btn-primary.btn-small,
+.search-form .btn-secondary.btn-small,
+.report-filter-bar .btn-primary.btn-small,
+.report-filter-bar .btn-secondary.btn-small {
+    padding: 0 14px;
+}
+
+.search-form .btn-primary,
+.search-form .btn-secondary,
+.report-filter-bar .btn-primary,
+.report-filter-bar .btn-secondary {
+    min-width: 0;
+}
+
 .table-wrap {
     overflow-x: auto;
     max-width: 100%;
