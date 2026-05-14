@@ -106,7 +106,7 @@
                         </div>
                     </div>
 
-                    <form th:action="@{/ban-hang/tao-don}" th:object="${banHangRequest}" method="post" class="banhang-form">
+                    <form th:action="@{/ban-hang/tao-don}" th:object="${banHangRequest}" method="post" class="banhang-form banhang-order-form">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                         <input type="hidden" th:field="*{maBan}" id="banhang-maBan">
 
@@ -143,52 +143,51 @@
                                             th:text="|${khachHang.maKhachHang} - ${khachHang.hoTen}|"></option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="banhang-order-cart">
-                            <h4 class="banhang-panel__subheading">Giỏ hàng</h4>
-                            <div class="cart-list">
-                                <article class="cart-item" th:if="${#lists.isEmpty(pageData.gioHang)}">
-                                    <p class="placeholder-text">Giỏ hàng đang trống. Hãy thêm món từ danh sách bên trái.</p>
-                                </article>
-
-                                <article class="cart-item" th:each="item : ${pageData.gioHang}">
-                                    <div class="cart-item__top">
-                                        <div>
-                                            <h4 class="cart-item__name" th:text="${item.tenMon}"></h4>
-                                            <p class="cart-item__meta"
-                                               th:text="|${item.tenNhomMon} • ${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></p>
-                                        </div>
-                                        <strong th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></strong>
-                                    </div>
-                                    <form th:action="@{/ban-hang/cap-nhat-so-luong}" method="post" class="cart-item__actions">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                        <input type="hidden" name="maMon" th:value="${item.maMon}">
-                                        <input type="number" min="1" name="soLuong" class="form-control" style="width: 88px;" th:value="${item.soLuong}">
-                                        <button type="submit" class="btn-secondary btn-small">Cập nhật</button>
-                                    </form>
-                                    <form th:action="@{/ban-hang/xoa-mon}" method="post" class="cart-item__actions">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                        <input type="hidden" name="maMon" th:value="${item.maMon}">
-                                        <button type="submit" class="btn-logout btn-small">Xóa</button>
-                                    </form>
-                                </article>
-                            </div>
-
-                            <div class="cart-summary">
-                                <div class="cart-summary__row">
-                                    <span class="cart-summary__label">Tổng tiền tạm tính</span>
-                                    <span class="cart-summary__value"
-                                          th:text="|${#numbers.formatDecimal(pageData.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></span>
-                                </div>
-                                <p class="hint-text">Giỏ hàng và tổng tiền được tính phía server, không tính trong view.</p>
-                            </div>
-                        </div>
 
                         <div class="form-actions banhang-order-actions">
                             <button type="submit" class="btn-primary">Tạo đơn hàng</button>
                         </div>
                     </form>
+
+                    <div class="banhang-order-cart">
+                        <h4 class="banhang-panel__subheading">Giỏ hàng</h4>
+                        <div class="cart-list">
+                            <article class="cart-item" th:if="${#lists.isEmpty(pageData.gioHang)}">
+                                <p class="placeholder-text">Giỏ hàng đang trống. Hãy thêm món từ danh sách bên trái.</p>
+                            </article>
+
+                            <article class="cart-item" th:each="item : ${pageData.gioHang}">
+                                <div class="cart-item__top">
+                                    <div>
+                                        <h4 class="cart-item__name" th:text="${item.tenMon}"></h4>
+                                        <p class="cart-item__meta"
+                                           th:text="|${item.tenNhomMon} • ${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} đ|"></p>
+                                    </div>
+                                    <strong th:text="|${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} đ|"></strong>
+                                </div>
+                                <form th:action="@{/ban-hang/cap-nhat-so-luong}" method="post" class="cart-item__actions">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <input type="hidden" name="maMon" th:value="${item.maMon}">
+                                    <input type="number" min="1" name="soLuong" class="form-control" style="width: 88px;" th:value="${item.soLuong}">
+                                    <button type="submit" class="btn-secondary btn-small">Cập nhật</button>
+                                </form>
+                                <form th:action="@{/ban-hang/xoa-mon}" method="post" class="cart-item__actions">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <input type="hidden" name="maMon" th:value="${item.maMon}">
+                                    <button type="submit" class="btn-logout btn-small">Xóa</button>
+                                </form>
+                            </article>
+                        </div>
+
+                        <div class="cart-summary">
+                            <div class="cart-summary__row">
+                                <span class="cart-summary__label">Tổng tiền tạm tính</span>
+                                <span class="cart-summary__value"
+                                      th:text="|${#numbers.formatDecimal(pageData.tongTien, 0, 'COMMA', 0, 'POINT')} đ|"></span>
+                            </div>
+                            <p class="hint-text">Giỏ hàng và tổng tiền được tính phía server, không tính trong view.</p>
+                        </div>
+                    </div>
                 </aside>
             </div>
         </section>

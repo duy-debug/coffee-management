@@ -600,6 +600,8 @@ select {
     padding: 12px 14px;
     margin: 0 0 16px;
     font-weight: 600;
+    overflow: hidden;
+    transition: opacity 0.28s ease, transform 0.28s ease, max-height 0.28s ease, margin 0.28s ease, padding 0.28s ease, border-width 0.28s ease;
 }
 
 .alert-success {
@@ -616,6 +618,17 @@ select {
 
 .alert:empty {
     display: none;
+}
+
+.alert--dismissed {
+    opacity: 0;
+    transform: translateY(-6px);
+    max-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
 }
 
 .toolbar,

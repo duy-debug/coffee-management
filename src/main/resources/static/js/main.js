@@ -254,6 +254,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 preview.textContent = label || "Chưa chọn bàn";
             }
 
+            if (value) {
+                const dineInRadio = root.querySelector('[data-order-type][value="Dùng tại quán"]');
+                if (dineInRadio) {
+                    dineInRadio.checked = true;
+                    dineInRadio.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+
+                try {
+                    sessionStorage.setItem(orderTypeStorageKey, "Dùng tại quán");
+                } catch (error) {
+                    // ignore storage issues
+                }
+            }
+
             if (persist) {
                 writeStoredBan(value, label);
             }
@@ -287,6 +301,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateActiveBan(restoredValue, restoredLabel, false);
+    };
+
+    const bindAutoDismissAlerts = (root = document) => {
+        root.querySelectorAll(".alert").forEach((alert) => {
+            if (alert.dataset.autoDismissBound === "1") {
+                return;
+            }
+
+            alert.dataset.autoDismissBound = "1";
+
+            window.setTimeout(() => {
+                if (!alert.isConnected) {
+                    return;
+                }
+
+                alert.classList.add("alert--dismissed");
+                window.setTimeout(() => {
+                    if (alert.isConnected) {
+                        alert.remove();
+                    }
+                }, 280);
+            }, 3000);
+        });
     };
 
     const applyActiveStateFromDocument = (doc) => {
@@ -324,6 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bindImageInputs(contentHost);
         bindOrderTypeInputs(contentHost);
         bindBanSelectInputs(contentHost);
+        bindAutoDismissAlerts(contentHost);
         window.scrollTo(0, 0);
     };
 
@@ -414,5 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
     bindImageInputs();
     bindOrderTypeInputs();
     bindBanSelectInputs();
+    bindAutoDismissAlerts();
     syncSidebarState();
 });
