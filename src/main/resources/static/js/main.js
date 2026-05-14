@@ -2,6 +2,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const shell = document.querySelector(".app-shell");
     const overlay = document.querySelector(".sidebar-overlay");
     const openBtn = document.querySelector("[data-sidebar-open]");
+    const contentHost = document.querySelector("[data-page-content]");
+    const topbarTitle = document.querySelector(".page-title");
+    const pageSubtitle = document.querySelector(".page-subtitle");
+    const sidebar = document.querySelector(".sidebar");
+
+    const normalizePath = (path) => {
+        if (!path) {
+            return "/";
+        }
+        return path.length > 1 ? path.replace(/\/$/, "") : path;
+    };
+
+    const currentPath = () => normalizePath(window.location.pathname);
+
     const closeSidebar = () => {
         shell?.classList.remove("sidebar-open");
         overlay?.classList.remove("is-open");
@@ -12,73 +26,226 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay?.classList.add("is-open");
     };
 
+    const syncSidebarState = (path = currentPath()) => {
+        if (!sidebar) {
+            return;
+        }
+
+        sidebar.querySelectorAll(".nav-link").forEach((link) => {
+            link.classList.remove("active");
+        });
+
+        sidebar.querySelectorAll(".nav-group").forEach((group) => {
+            group.classList.remove("open");
+        });
+
+        sidebar.querySelectorAll("[data-route]").forEach((link) => {
+            const route = normalizePath(link.getAttribute("data-route") || "");
+            if (!route) {
+                return;
+            }
+
+            if (path === route || path.startsWith(`${route}/`)) {
+                link.classList.add("active");
+                const group = link.closest(".nav-group");
+                if (group) {
+                    group.classList.add("open");
+                }
+            }
+        });
+    };
+
+    const bindSubmenuToggles = () => {
+        document.querySelectorAll("[data-submenu-toggle]").forEach((button) => {
+            if (button.dataset.bound === "1") {
+                return;
+            }
+
+            button.dataset.bound = "1";
+            button.addEventListener("click", () => {
+                const group = button.closest(".nav-group");
+                group?.classList.toggle("open");
+            });
+        });
+    };
+
+    const bindImageInputs = (root = document) => {
+        root.querySelectorAll("[data-image-input]").forEach((input) => {
+            if (input.dataset.bound === "1") {
+                return;
+            }
+
+            input.dataset.bound = "1";
+            input.addEventListener("change", () => {
+                const file = input.files && input.files[0];
+                const preview = input.closest(".form-group")?.querySelector("[data-image-preview]");
+                if (!preview) {
+                    return;
+                }
+
+                preview.innerHTML = "";
+                if (!file) {
+                    preview.classList.add("image-preview--empty");
+                    preview.textContent = "Chưa có ảnh xem trước";
+                    return;
+                }
+
+                const img = document.createElement("img");
+                img.alt = "Xem trước ảnh món";
+                preview.classList.remove("image-preview--empty");
+                preview.appendChild(img);
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    img.src = event.target?.result || "";
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    };
+
+    const bindOrderTypeInputs = (root = document) => {
+        const orderTypeInputs = root.querySelectorAll("[data-order-type]");
+        const tableSection = root.querySelector("[data-table-section]");
+        if (!orderTypeInputs.length || !tableSection) {
+            return;
+        }
+
+        const toggleTableSection = () => {
+            const selected = root.querySelector("[data-order-type]:checked");
+            const isDineIn = selected && selected.value === "Dùng tại quán";
+            tableSection.style.display = isDineIn ? "block" : "none";
+        };
+
+        orderTypeInputs.forEach((input) => {
+            if (input.dataset.bound === "1") {
+                return;
+            }
+            input.dataset.bound = "1";
+            input.addEventListener("change", toggleTableSection);
+        });
+
+        toggleTableSection();
+    };
+
+    const applyActiveStateFromDocument = (doc) => {
+        const nextTitle = doc.querySelector(".page-title")?.textContent?.trim();
+        const nextSubtitle = doc.querySelector(".page-subtitle")?.textContent?.trim();
+        if (topbarTitle && nextTitle) {
+            topbarTitle.textContent = nextTitle;
+        }
+        if (pageSubtitle && nextSubtitle) {
+            pageSubtitle.textContent = nextSubtitle;
+        }
+
+        const title = doc.querySelector("title")?.textContent?.trim();
+        if (title) {
+            document.title = title;
+        }
+    };
+
+    const replaceMainContent = (doc, path) => {
+        if (!contentHost) {
+            window.location.assign(window.location.href);
+            return;
+        }
+
+        const nextContent = doc.querySelector("[data-page-content]");
+        const nextInner = nextContent?.innerHTML;
+        if (!nextInner) {
+            window.location.assign(window.location.href);
+            return;
+        }
+
+        contentHost.innerHTML = nextInner;
+        applyActiveStateFromDocument(doc);
+        syncSidebarState(normalizePath(path || window.location.pathname));
+        bindImageInputs(contentHost);
+        bindOrderTypeInputs(contentHost);
+        window.scrollTo(0, 0);
+    };
+
+    const loadPage = async (url, pushHistory = true) => {
+        try {
+            const response = await fetch(url, {
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "fetch"
+                }
+            });
+
+            if (!response.ok) {
+                window.location.assign(url);
+                return;
+            }
+
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            replaceMainContent(doc, url.pathname);
+            if (pushHistory) {
+                history.pushState({ url }, "", url);
+            }
+            closeSidebar();
+        } catch (error) {
+            window.location.assign(url);
+        }
+    };
+
     openBtn?.addEventListener("click", openSidebar);
     overlay?.addEventListener("click", closeSidebar);
 
-    document.querySelectorAll("[data-submenu-toggle]").forEach((button) => {
-        button.addEventListener("click", () => {
-            const group = button.closest(".nav-group");
-            group?.classList.toggle("open");
-        });
-    });
-
-    document.querySelectorAll("[data-image-input]").forEach((input) => {
-        input.addEventListener("change", () => {
-            const file = input.files && input.files[0];
-            const preview = input.closest(".form-group")?.querySelector("[data-image-preview]");
-            if (!preview) {
-                return;
-            }
-
-            preview.innerHTML = "";
-            if (!file) {
-                preview.classList.add("image-preview--empty");
-                preview.textContent = "Chưa có ảnh xem trước";
-                return;
-            }
-
-            const img = document.createElement("img");
-            img.alt = "Xem trước ảnh món";
-            preview.classList.remove("image-preview--empty");
-            preview.appendChild(img);
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                img.src = event.target?.result || "";
-            };
-            reader.readAsDataURL(file);
-        });
-    });
-
-    const orderTypeInputs = document.querySelectorAll("[data-order-type]");
-    const tableSection = document.querySelector("[data-table-section]");
-    const toggleTableSection = () => {
-        const selected = document.querySelector("[data-order-type]:checked");
-        const isDineIn = selected && selected.value === "Dùng tại quán";
-        if (!tableSection) {
-            return;
-        }
-        tableSection.style.display = isDineIn ? "block" : "none";
-    };
-
-    orderTypeInputs.forEach((input) => input.addEventListener("change", toggleTableSection));
-    toggleTableSection();
-
-    const normalizePath = (path) => (path.length > 1 ? path.replace(/\/$/, "") : path);
-    const currentPath = normalizePath(window.location.pathname);
-
     document.querySelectorAll("[data-route]").forEach((link) => {
-        const route = normalizePath(link.getAttribute("data-route") || "");
-        if (!route) {
+        if (link.dataset.partialBound === "1") {
             return;
         }
 
-        if (currentPath === route || currentPath.startsWith(`${route}/`)) {
-            link.classList.add("active");
-            const group = link.closest(".nav-group");
-            if (group) {
-                group.classList.add("open");
+        link.dataset.partialBound = "1";
+        link.addEventListener("click", (event) => {
+            if (event.defaultPrevented) {
+                return;
             }
+
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+                return;
+            }
+
+            const href = link.getAttribute("href");
+            if (!href || href.startsWith("http")) {
+                return;
+            }
+
+            const url = new URL(href, window.location.origin);
+            if (url.origin !== window.location.origin) {
+                return;
+            }
+
+            event.preventDefault();
+            loadPage(url.pathname + url.search);
+        });
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!shell?.classList.contains("sidebar-open")) {
+            return;
+        }
+
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+
+        if (!target.closest(".sidebar")) {
+            closeSidebar();
         }
     });
+
+    window.addEventListener("popstate", () => {
+        loadPage(window.location.pathname + window.location.search, false);
+    });
+
+    bindSubmenuToggles();
+    bindImageInputs();
+    bindOrderTypeInputs();
+    syncSidebarState();
 });

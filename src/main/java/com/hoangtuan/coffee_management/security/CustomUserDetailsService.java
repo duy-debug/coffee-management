@@ -4,8 +4,8 @@ import com.hoangtuan.coffee_management.entity.TaiKhoan;
 import com.hoangtuan.coffee_management.repository.TaiKhoanRepository;
 import java.util.List;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,15 +32,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         String tenVaiTro = taiKhoan.getVaiTro().getTenVaiTro();
+        String maNhanVien = taiKhoan.getNhanVien() != null ? taiKhoan.getNhanVien().getMaNhanVien() : null;
+        String hoTenNhanVien = taiKhoan.getNhanVien() != null ? taiKhoan.getNhanVien().getHoTen() : null;
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(tenVaiTro));
 
-        return User.builder()
-                .username(taiKhoan.getTenDangNhap())
-                .password(taiKhoan.getMatKhau())
-                .authorities(List.of(new SimpleGrantedAuthority(tenVaiTro)))
-                .disabled(Boolean.FALSE.equals(taiKhoan.getTrangThai()))
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .build();
+        return new CustomUserDetails(
+                taiKhoan.getTenDangNhap(),
+                taiKhoan.getMatKhau(),
+                Boolean.TRUE.equals(taiKhoan.getTrangThai()),
+                authorities,
+                maNhanVien,
+                hoTenNhanVien
+        );
     }
 }

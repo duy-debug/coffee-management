@@ -12,8 +12,11 @@
 <div class="app-shell app-layout">
     <aside class="sidebar">
         <div class="brand">
-            <h1 class="brand__title">Coffee Management System</h1>
-            <p class="brand__subtitle">Hệ thống Quản lý Cà phê Hoàng Tuấn</p>
+            <div class="brand__mark" aria-hidden="true">☕</div>
+            <div class="brand__text">
+                <h1 class="brand__title">Coffee Hoàng Tuấn</h1>
+                <p class="brand__subtitle">Hệ thống quản lý quán cà phê</p>
+            </div>
         </div>
 
         <nav class="sidebar-nav">
@@ -221,8 +224,8 @@
             <div class="topbar__actions">
                 <div class="user-box">
                     <div>
-                        <div class="user-box__label">Người dùng đang đăng nhập</div>
-                        <div class="user-box__value" sec:authentication="name">admin</div>
+                        <div class="user-box__label">Nhân viên đang đăng nhập</div>
+                        <div class="user-box__value" sec:authentication="principal.displayName">Admin</div>
                     </div>
                 </div>
                 <form th:action="@{/logout}" method="post" class="logout-form">
@@ -232,7 +235,7 @@
             </div>
         </header>
 
-        <main class="content page-content">
+        <main class="content page-content" id="page-content" data-page-content>
             <div th:replace="${content}"></div>
         </main>
     </div>
