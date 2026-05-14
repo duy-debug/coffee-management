@@ -26,18 +26,33 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay?.classList.add("is-open");
     };
 
-    const syncSidebarState = (path = currentPath()) => {
-        if (!sidebar) {
+    const setActiveSidebarLink = (activeLink) => {
+        if (!sidebar || !activeLink) {
             return;
         }
 
         sidebar.querySelectorAll(".nav-link").forEach((link) => {
             link.classList.remove("active");
+            link.removeAttribute("aria-current");
         });
 
-        sidebar.querySelectorAll(".nav-group").forEach((group) => {
-            group.classList.remove("open");
-        });
+        activeLink.classList.add("active");
+        activeLink.setAttribute("aria-current", "page");
+
+        const group = activeLink.closest(".nav-group");
+        if (group) {
+            group.classList.add("open");
+        }
+    };
+
+    const findBestSidebarLink = (path) => {
+        if (!sidebar) {
+            return null;
+        }
+
+        const normalizedPath = normalizePath(path);
+        let bestLink = null;
+        let bestLength = -1;
 
         sidebar.querySelectorAll("[data-route]").forEach((link) => {
             const route = normalizePath(link.getAttribute("data-route") || "");
@@ -45,14 +60,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (path === route || path.startsWith(`${route}/`)) {
-                link.classList.add("active");
-                const group = link.closest(".nav-group");
-                if (group) {
-                    group.classList.add("open");
-                }
+            const matches = normalizedPath === route || normalizedPath.startsWith(`${route}/`);
+            if (!matches) {
+                return;
+            }
+
+            if (route.length > bestLength) {
+                bestLength = route.length;
+                bestLink = link;
             }
         });
+
+        return bestLink;
+    };
+
+    const syncSidebarState = (path = currentPath()) => {
+        if (!sidebar) {
+            return;
+        }
+
+        const scrollTop = sidebar.scrollTop;
+
+        const activeLink = findBestSidebarLink(path);
+        setActiveSidebarLink(activeLink);
+
+        sidebar.scrollTop = scrollTop;
     };
 
     const bindSubmenuToggles = () => {
@@ -166,8 +198,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const loadPage = async (url, pushHistory = true) => {
+        const nextUrl = url instanceof URL ? url : new URL(url, window.location.origin);
+        const nextPath = nextUrl.pathname + nextUrl.search;
+
         try {
-            const response = await fetch(url, {
+            const response = await fetch(nextPath, {
                 credentials: "same-origin",
                 headers: {
                     "X-Requested-With": "fetch"
@@ -175,20 +210,20 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!response.ok) {
-                window.location.assign(url);
+                window.location.assign(nextPath);
                 return;
             }
 
             const html = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
-            replaceMainContent(doc, url.pathname);
+            replaceMainContent(doc, nextPath);
             if (pushHistory) {
-                history.pushState({ url }, "", url);
+                history.pushState({ url: nextPath }, "", nextPath);
             }
             closeSidebar();
         } catch (error) {
-            window.location.assign(url);
+            window.location.assign(nextPath);
         }
     };
 
@@ -221,6 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             event.preventDefault();
+            setActiveSidebarLink(link);
             loadPage(url.pathname + url.search);
         });
     });

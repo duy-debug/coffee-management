@@ -74,6 +74,7 @@ select {
     scrollbar-gutter: stable;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.36) rgba(255, 255, 255, 0.06);
+    overflow-anchor: none;
     z-index: 1000;
     box-shadow: 8px 0 30px rgba(122, 73, 23, 0.22);
 }
@@ -147,6 +148,7 @@ select {
 
 .sidebar-nav {
     padding: 16px 22px 24px 14px;
+    overflow-anchor: none;
 }
 
 .nav-link,
@@ -227,6 +229,7 @@ select {
     margin-left: 12px;
     border-left: 1px solid rgba(255, 255, 255, 0.15);
     padding-left: 12px;
+    overflow-anchor: none;
 }
 
 .nav-group.open .nav-submenu {
