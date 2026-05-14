@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const topbarTitle = document.querySelector(".page-title");
     const pageSubtitle = document.querySelector(".page-subtitle");
     const sidebar = document.querySelector(".sidebar");
+    const selectedBanStorageKey = "coffee-ban-hang-selected-ban";
+    const orderTypeStorageKey = "coffee-ban-hang-order-type";
 
     const normalizePath = (path) => {
         if (!path) {
@@ -139,6 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const bindOrderTypeInputs = (root = document) => {
         const orderTypeInputs = root.querySelectorAll("[data-order-type]");
         const tableSection = root.querySelector("[data-table-section]");
+        const hiddenBanInput = root.querySelector("#banhang-maBan");
+        const selectedBanPreview = root.querySelector("[data-selected-ban-preview]");
+        const banPicker = root.querySelector("[data-table-picker]");
         if (!orderTypeInputs.length || !tableSection) {
             return;
         }
@@ -147,7 +152,38 @@ document.addEventListener("DOMContentLoaded", () => {
             const selected = root.querySelector("[data-order-type]:checked");
             const isDineIn = selected && selected.value === "Dùng tại quán";
             tableSection.style.display = isDineIn ? "block" : "none";
+
+            if (!isDineIn) {
+                if (hiddenBanInput) {
+                    hiddenBanInput.value = "";
+                }
+
+                if (selectedBanPreview) {
+                    selectedBanPreview.textContent = "Không cần bàn";
+                }
+
+                if (banPicker) {
+                    banPicker.querySelectorAll("[data-ban-select]").forEach((button) => {
+                        button.classList.remove("is-selected");
+                        button.setAttribute("aria-pressed", "false");
+                    });
+                }
+            }
         };
+
+        let restoredOrderType = "";
+        try {
+            restoredOrderType = sessionStorage.getItem(orderTypeStorageKey) || "";
+        } catch (error) {
+            restoredOrderType = "";
+        }
+
+        if (restoredOrderType) {
+            const storedInput = root.querySelector(`[data-order-type][value="${restoredOrderType}"]`);
+            if (storedInput) {
+                storedInput.checked = true;
+            }
+        }
 
         orderTypeInputs.forEach((input) => {
             if (input.dataset.bound === "1") {
@@ -155,9 +191,102 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             input.dataset.bound = "1";
             input.addEventListener("change", toggleTableSection);
+            input.addEventListener("change", () => {
+                try {
+                    sessionStorage.setItem(orderTypeStorageKey, input.value || "");
+                } catch (error) {
+                    // ignore storage issues
+                }
+            });
         });
 
+        const checked = root.querySelector("[data-order-type]:checked");
+        if (!checked && orderTypeInputs.length) {
+            const defaultType = restoredOrderType || orderTypeInputs[0].value;
+            const defaultInput = root.querySelector(`[data-order-type][value="${defaultType}"]`);
+            if (defaultInput) {
+                defaultInput.checked = true;
+            }
+        }
+
+        const currentChecked = root.querySelector("[data-order-type]:checked");
+        if (currentChecked) {
+            try {
+                sessionStorage.setItem(orderTypeStorageKey, currentChecked.value || "");
+            } catch (error) {
+                // ignore storage issues
+            }
+        }
+
         toggleTableSection();
+    };
+
+    const bindBanSelectInputs = (root = document) => {
+        const picker = root.querySelector("[data-table-picker]");
+        const hiddenInput = root.querySelector("#banhang-maBan");
+        const preview = root.querySelector("[data-selected-ban-preview]");
+        if (!picker || !hiddenInput) {
+            return;
+        }
+
+        const writeStoredBan = (value, label) => {
+            try {
+                if (value) {
+                    sessionStorage.setItem(selectedBanStorageKey, JSON.stringify({ value, label: label || "" }));
+                } else {
+                    sessionStorage.removeItem(selectedBanStorageKey);
+                }
+            } catch (error) {
+                // ignore storage issues
+            }
+        };
+
+        const updateActiveBan = (value, label, persist = true) => {
+            hiddenInput.value = value || "";
+
+            picker.querySelectorAll("[data-ban-select]").forEach((button) => {
+                const isSelected = button.getAttribute("data-ban-value") === (value || "");
+                button.classList.toggle("is-selected", isSelected);
+                button.setAttribute("aria-pressed", isSelected ? "true" : "false");
+            });
+
+            if (preview) {
+                preview.textContent = label || "Chưa chọn bàn";
+            }
+
+            if (persist) {
+                writeStoredBan(value, label);
+            }
+        };
+
+        picker.querySelectorAll("[data-ban-select]").forEach((button) => {
+            if (button.dataset.bound === "1") {
+                return;
+            }
+
+            button.dataset.bound = "1";
+            button.addEventListener("click", () => {
+                updateActiveBan(button.getAttribute("data-ban-value"), button.getAttribute("data-ban-label"));
+            });
+        });
+
+        let restoredValue = hiddenInput.value || "";
+        let restoredLabel = picker.querySelector(".table-chip.is-selected")?.getAttribute("data-ban-label") || "";
+
+        if (!restoredValue) {
+            try {
+                const stored = sessionStorage.getItem(selectedBanStorageKey);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    restoredValue = parsed?.value || "";
+                    restoredLabel = parsed?.label || "";
+                }
+            } catch (error) {
+                // ignore storage issues
+            }
+        }
+
+        updateActiveBan(restoredValue, restoredLabel, false);
     };
 
     const applyActiveStateFromDocument = (doc) => {
@@ -194,6 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
         syncSidebarState(normalizePath(path || window.location.pathname));
         bindImageInputs(contentHost);
         bindOrderTypeInputs(contentHost);
+        bindBanSelectInputs(contentHost);
         window.scrollTo(0, 0);
     };
 
@@ -283,5 +413,6 @@ document.addEventListener("DOMContentLoaded", () => {
     bindSubmenuToggles();
     bindImageInputs();
     bindOrderTypeInputs();
+    bindBanSelectInputs();
     syncSidebarState();
 });

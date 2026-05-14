@@ -1090,11 +1090,18 @@ select {
 
 .banhang-layout {
     display: grid;
-    grid-template-columns: minmax(0, 280px) minmax(0, 1fr) minmax(0, 360px);
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.88fr);
     gap: 18px;
     align-items: start;
     width: 100%;
     max-width: 100%;
+}
+
+.banhang-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
 }
 
 .order-edit-grid {
@@ -1121,10 +1128,47 @@ select {
     padding: 18px;
 }
 
+.banhang-panel--tables {
+    padding-bottom: 20px;
+}
+
+.banhang-panel--order {
+    position: sticky;
+    top: 98px;
+}
+
+.banhang-panel__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
 .banhang-panel__title {
     margin: 0 0 12px;
     color: var(--brand-900);
     font-size: 18px;
+}
+
+.banhang-panel__subtitle {
+    margin: -6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.banhang-panel__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: var(--brand-700);
+    background: rgba(245, 134, 51, 0.12);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 .banhang-form .form-group {
@@ -1133,6 +1177,126 @@ select {
 
 .banhang-form .form-control {
     min-height: 44px;
+}
+
+.banhang-order-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.banhang-order-cart {
+    margin-top: 18px;
+}
+
+.banhang-order-actions {
+    margin-top: 18px;
+}
+
+.selected-table-card {
+    border: 1px solid rgba(245, 134, 51, 0.16);
+    border-radius: 16px;
+    background: #fff8f1;
+    padding: 14px;
+}
+
+.selected-table-card__label {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.selected-table-card__value {
+    color: var(--brand-900);
+    font-size: 16px;
+    font-weight: 800;
+    word-break: break-word;
+}
+
+.table-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.table-chip {
+    width: 100%;
+    border: 1px solid rgba(245, 134, 51, 0.16);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 25% 18%, rgba(245, 134, 51, 0.16), transparent 35%),
+        linear-gradient(180deg, #ffffff, #fff8f1);
+    box-shadow: 0 10px 22px rgba(122, 73, 23, 0.08);
+    padding: 16px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.table-chip:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 134, 51, 0.34);
+    box-shadow: 0 16px 28px rgba(122, 73, 23, 0.14);
+}
+
+.table-chip.is-selected {
+    border-color: rgba(245, 134, 51, 0.6);
+    background:
+        radial-gradient(circle at 25% 18%, rgba(245, 134, 51, 0.26), transparent 34%),
+        linear-gradient(135deg, rgba(245, 134, 51, 0.16), rgba(255, 244, 233, 0.98));
+    box-shadow: 0 18px 32px rgba(245, 134, 51, 0.18);
+}
+
+.table-chip__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(63, 152, 85, 0.12);
+    color: #2d6b3e;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.table-chip strong {
+    color: var(--brand-900);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.table-chip__meta,
+.table-chip small {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.table-chip__floor {
+    width: 100%;
+    height: 10px;
+    margin-top: 4px;
+    border-radius: 999px;
+    background:
+        linear-gradient(90deg, rgba(245, 134, 51, 0.72), rgba(245, 134, 51, 0.14)),
+        rgba(245, 134, 51, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.table-chip.is-selected .table-chip__status {
+    background: rgba(245, 134, 51, 0.18);
+    color: var(--brand-800);
+}
+
+.table-chip:focus-visible {
+    outline: 3px solid rgba(245, 134, 51, 0.24);
+    outline-offset: 2px;
 }
 
 .banhang-badge {
@@ -1289,6 +1453,10 @@ select {
 }
 
 .order-type-option input {
+    margin: 0;
+}
+
+.banhang-form [data-table-section] {
     margin: 0;
 }
 
@@ -1926,6 +2094,10 @@ select {
 
     .banhang-layout {
         grid-template-columns: 1fr;
+    }
+
+    .banhang-panel--order {
+        position: static;
     }
 
     .order-edit-grid {
